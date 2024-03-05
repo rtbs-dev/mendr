@@ -1,0 +1,75 @@
+import numpy as np
+from scipy.spatial.distance import squareform
+import csrgraph as cg
+from scipy import sparse as sp
+import networkx as nx
+from beartype import beartype
+from beartype.door import is_bearable
+from beartype.typing import Literal
+
+from .types import PosInt, #ReturnsGraph
+
+sparseG_from_nx = cg.csrgraph..sp.csr_matrix..nx.to_scipy_sparse_array
+DEFAULT_RNG = np.random.default_rng()
+
+type RandGraphType = (
+    Literal['tree']
+    | Literal['block']
+    # | Literal['ERG']
+    # | ReturnsGraph
+)
+
+addpattern def _graph_gen_dispatch('tree') = nx.random_labeled_tree
+addpattern def _graph_gen_dispatch('block') =
+    (n, *args, **kws)=>_graph_gen_dispatch('tree')(n+1, *args, **kws) |> nx.line_graph
+# addpattern def _graph_gen_dispatch(f `is_bearable` ReturnsGraph) = f
+
+
+@beartype
+def graph_gen(kind: RandGraphType, n: PosInt, rng=DEFAULT_RNG, **kws):
+    return _graph_gen_dispatch(kind)(n, seed=rng, **kws)
+
+@beartype
+def walk_randomly(
+        graph:cg.csrgraph,
+        n_jumps:int|None=None,
+        n_walks:int|None=None,
+        rng=DEFAULT_RNG
+):
+    """vectorized wrapper on CSGraph, with uniformly random starting nodes.
+    TODO: allow arbitrary nodes selection distribution to be passed.
+    """
+    n = graph.mat.shape[0]
+    # rate_param = 1/size
+    n_jumps ??= rng.geometric(1/n)+5
+    n_walks ??= rng.negative_binomial(2, 1/n)+10
+    starts = rng.choice(n, size=n_walks)
+    return graph.random_walks(walklen=n_jumps, start_nodes=starts, seed=rng)
+
+
+
+
+"""
+def sim_graph_and_data(
+    graph_gen_func,
+    n_nodes,
+    n_jumps,
+    n_obs,
+    rng=np.random.default_rng(2)
+):
+    Gnx = graph_gen_func(n_nodes)
+    n = nx.number_of_nodes(Gnx) # graph_gen_func could change it!
+    G = sparseG_from_nx(Gnx)
+    starts = rng.choice(n, size=n_obs)
+    rw = G.random_walks(walklen = n_jumps, start_nodes=starts) #TODO no seed... :(
+    # trick to one-hot encode occurrences from walks
+    row_idx = np.repeat(np.arange(rw.shape[0])[:,None], rw.shape[1],1).flatten()
+    col_idx = rw.flatten()
+    idx = np.unique(np.array([row_idx,col_idx]), axis=1)  # no duplicates
+    # assert G.mat.shape[0]>=col_idx.max(), f'{G.mat.shape} A is bad for col pointer {col_idx.max()}'
+    X = sparse.coo_matrix(
+        (np.ones_like(idx[0]), (idx[0], idx[1])),
+        shape=(rw.shape[0], n)
+    ).astype(bool)
+    return G.mat, X
+"""

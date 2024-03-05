@@ -1,0 +1,92 @@
+"""
+Inspired by BinSparse specification
+"""
+from serde import serde, AdjacentTagging
+from dataclasses import dataclass
+import numpy as np
+import numpy.typing as npt
+import networkx as nx
+import sparse
+import csrgraph as cg
+from beartype.door import is_bearable
+from typing import Type
+from jaxtyping import Int, Shaped
+from numbers import Number
+from scipy.sparse import spmatrix, sparray, coo_matrix
+# import
+
+# @dataclass
+# class BSFmt:
+#     version:str = "0.1"
+
+# @dataclass
+# class SparseFMT:
+#     shape: (int; int)
+
+type SparseValues = Shaped[np.ndarray, "#nnz"]  # could be scalar
+
+@serde
+@dataclass
+class COO:
+    indices_0: npt.NDArray[int]
+    indices_1: npt.NDArray[int]
+    values: int #| np.number
+
+@serde
+@dataclass
+class CSC:
+    pointers_to_1: npt.NDArray[int]
+    indices_1: npt.NDArray[int]
+    values: int #| np.number
+
+
+type SparseArrayType = (
+    COO
+    | CSC
+)
+
+@serde(tagging=AdjacentTagging("format", "data_types"))
+@dataclass
+class SerialSparse:
+    # version:str = "0.1"
+    shape: tuple[int,int]
+    array: SparseArrayType
+
+
+    @classmethod
+    def from_array[T](cls:Type[T], a)->T:
+        return _from_sparse(a)
+
+
+    def to_array[T](self)->T:
+        return _to_sparse(self.shape, self.array)
+
+
+# @addpattern
+match def _from_sparse(a `is_bearable` sparse.COO):
+    idx = a.coords
+    values = 1  # ignore a.data for the purposes of this work... for now
+    # if np.all(np.isclose(a.data, a.data[0])):
+    #     values = a.data[0]
+    # else:
+    #     values = a.data
+
+    return SerialSparse(a.shape, COO(idx[0], idx[1], values))
+
+addpattern def _from_sparse(s `is_bearable` spmatrix) = s |> _from_sparse .. sparse.COO.from_scipy_sparse
+addpattern def _from_sparse(s `is_bearable` sparray) = s |> _from_sparse .. coo_matrix
+addpattern def _from_sparse(g `is_bearable` nx.Graph) = g |> _from_sparse .. nx.to_scipy_sparse_array
+addpattern def _from_sparse(g `is_bearable` cg.csrgraph) = _from_sparse(g.mat)
+
+
+match def _to_sparse(shape, COO(row,col,vals)):
+    coords = np.array([row,col])
+    return sparse.COO(coords, data=vals, shape=shape)
+
+
+@serde
+@dataclass
+class SerialRandWalks:
+    graph: SerialSparse
+    jumps: npt.NDArray
+    activations: SerialSparse
