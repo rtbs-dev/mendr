@@ -1,13 +1,11 @@
 import numpy as np
-from scipy.spatial.distance import squareform
 import csrgraph as cg
 from scipy import sparse as sp
 import networkx as nx
 from beartype import beartype
-from beartype.door import is_bearable
 from beartype.typing import Literal
 
-from .types import PosInt, #ReturnsGraph
+from .gmd_types import PosInt, #ReturnsGraph
 
 sparseG_from_nx = cg.csrgraph..sp.csr_matrix..nx.to_scipy_sparse_array
 DEFAULT_RNG = np.random.default_rng()
@@ -27,6 +25,11 @@ addpattern def _graph_gen_dispatch('block') =
 
 @beartype
 def graph_gen(kind: RandGraphType, n: PosInt, rng=DEFAULT_RNG, **kws):
+    """generate a supported random graph of size `n`
+
+    supports the use of a custom random state (e.g. `numpy.random.default_rng`)
+    Other keyword args get passed to the underlying random graph generator function
+    """
     return _graph_gen_dispatch(kind)(n, seed=rng, **kws)
 
 @beartype

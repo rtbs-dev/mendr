@@ -27,6 +27,12 @@ hypothesis = {extras = ["numpy"], version = "^6.98.12"}
 pytest = "^8.0.2"
 black = "^24.2.0"
 hypothesis-networkx = "^0.3.0"
+dvc = "^3.49.0"
+
+
+[tool.poetry.scripts]
+gmd-nist = 'nist_gmd.main:app'
+# gmd-nist-rw = 'nist_gmd.main:random-graph-walks'
 
 [build-system]
 requires = ["poetry-core"]

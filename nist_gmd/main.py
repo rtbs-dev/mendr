@@ -1,12 +1,14 @@
 from .generate import RandGraphType, graph_gen, walk_randomly
 from .io import SerialSparse, SerialRandWalks
-from .types import PosInt
+
+# from .types import PosInt
 from .one_hot import rw_jumps_to_coords
 
 import numpy as np
 from serde.json import to_json
 from cyclopts import App
-from beartype import beartype
+
+# from beartype import beartype
 import csrgraph as cg
 
 app = App()
@@ -14,6 +16,7 @@ app = App()
 
 @app.command
 def random_graph(kind: RandGraphType, size: int, seed: int | None = None):
+    """Generate a random graph and send a json representation to stdout."""
     RNG = np.random.default_rng(seed)
     g = graph_gen(kind, size, rng=RNG)
     print(to_json(SerialSparse.from_array(g)))
@@ -27,6 +30,10 @@ def random_graph_walks(
     n_jumps: int | None = None,
     seed: int | None = None,
 ):
+    """Generate a random graph and sample random walks on it.
+
+    Send both as json to stdout.
+    """
     RNG = np.random.default_rng(seed)
 
     g = cg.csrgraph(graph_gen(kind, size, rng=RNG))
@@ -40,4 +47,9 @@ def random_graph_walks(
     print(to_json(experiment))
 
 
-app()
+# def main():
+#     app()
+
+
+if __name__ == "__main__":
+    app()

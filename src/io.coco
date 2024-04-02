@@ -10,8 +10,7 @@ import sparse
 import csrgraph as cg
 from beartype.door import is_bearable
 from typing import Type
-from jaxtyping import Int, Shaped
-from numbers import Number
+from jaxtyping import Shaped
 from scipy.sparse import spmatrix, sparray, coo_matrix
 # import
 
