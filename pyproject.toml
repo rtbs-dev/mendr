@@ -8,7 +8,7 @@ readme = "README.md"
 packages = [{include = "nist_gmd"}]
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = ">=3.10,<3.13"
 networkx = "^3.2.1"
 numpy = "^1.26.4"
 scipy = "^1.12.0"
