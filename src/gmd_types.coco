@@ -1,0 +1,6 @@
+from beartype.vale import Is
+from typing import Annotated
+import networkx as nx
+
+type PosInt = Annotated[int, Is[def (n:int) => n>0]]
+type ReturnsGraph = (PosInt,...) -> nx.Graph # could refactor to (ReturnsNX | Returns ...)
