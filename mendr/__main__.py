@@ -1,7 +1,5 @@
 from .generate import RandGraphType, graph_gen, walk_randomly
 from .io import SerialSparse, SerialRandWalks
-
-# from .types import PosInt
 from .one_hot import rw_jumps_to_coords
 
 import numpy as np

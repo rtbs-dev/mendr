@@ -1,11 +1,11 @@
 [tool.poetry]
-name = "nist-gmd"
+name = "MENDR"
 version = "0.1.0"
-description = "NIST Graph Metrology Dataset"
+description = "Measurement Error in Network Diffusion Datasets for graph Reconstruction"
 authors = ["Rachael T. Sexton <rtbs@nist.gov>"]
 license = "NIST"
 readme = "README.md"
-packages = [{include = "nist_gmd"}]
+packages = [{include = "mendr"}]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.13"
@@ -30,8 +30,14 @@ hypothesis-networkx = "^0.3.0"
 dvc = "^3.49.0"
 
 
+
+[tool.poetry.group.report.dependencies]
+autoregistry = "^1.1.2"
+affinis = {path = "../affinis"}
+dvclive = {extras = ["markdown", "sklearn"], version = "^3.45.0"}
+
 [tool.poetry.scripts]
-gmd-nist = 'nist_gmd.main:app'
+gmd-nist = 'mendr.__main__:main'
 # gmd-nist-rw = 'nist_gmd.main:random-graph-walks'
 
 [build-system]
