@@ -26,7 +26,7 @@ def gen_thres_vals(x:PredProb)-> ProbThres:
 def _all_thres(x:PredProb, t:ProbThres)->PredThres:
     return np.less_equal.outer(t, x)
 
-
+#TODO use density (.getnnz()) for sparse via dispatching
 def _bool_contract(A:PredThres,B:PredThres) =(A*B).sum(axis=-1)
 def _TP(actual:PredThres,pred:PredThres) = _bool_contract( pred, actual)
 def _FP(actual:PredThres,pred:PredThres) = _bool_contract( pred,~actual)
@@ -75,25 +75,31 @@ class Contingent:
 
 
     @property
-    def f_beta(self, beta)=(1+beta**2)*np.divide(
-            self.PPV*self.TPR,
-            beta**2*self.PPV + self.TPR
-    )
+    def f_beta(self, beta)= f_beta(beta, self)
 
     @property
-    def f1(self)=self.f_beta(beta=1)
+    def F(self) = F1(self)
 
     @property
-    def recall(self)=self.TPR.filled(0)
+    def recall(self)= recall(self)
 
     @property
-    def precision(self)=self.PPV.filled(1)
+    def precision(self)=precision(self)
 
+    @property
+    def mcc(self)=matthews_corrcoef(self)
+
+    @property
+    def G(self) = folkes_mallows(self)
 
 # def PPV(Yt:PredThres,Pt:PredThres) = TP/PP
 # def NPV(Yt:PredThres,Pt:PredThres) = TN/PN
 # def TPR(Yt:PredThres,Pt:PredThres) = TP/
 # def TNR(Yt:PredThres,Pt:PredThres) = _bool_contract(~Pt,~Yt)
+
+def recall(Y:Contingent)->ProbThres = Y.TPR.filled(1.)
+
+def precision(Y:Contingent)->ProbThres = Y.PPV.filled(1.)
 
 def f_beta(beta:float, Y:Contingent)-> ProbThres:
     top = (1+beta**2)*Y.PPV*Y.TPR
@@ -103,38 +109,42 @@ def f_beta(beta:float, Y:Contingent)-> ProbThres:
 
 def F1(Y:Contingent)->ProbThres = f_beta(1., Y)
 
-def recall(Y:Contingent)->ProbThres = Y.TPR.filled(0.)
+def matthews_corrcoef(Y:Contingent)->ProbThres = (l - r).filled(0) where:
+    # return 1-cdist(Y.y_pred, Y.y_true, "correlation")[:,0]
 
-def precision(Y:Contingent)->ProbThres = Y.PPV.filled(1.)
+    m = np.vstack([Y.TPR,Y.TNR,Y.PPV,Y.NPV])
+    l = np.sqrt(m)).prod(axis=0)
+    r = np.sqrt(1-m)).prod(axis=0)
 
-def matt_corrcoef(Y:Contingent)->ProbThres:
-    return 1-cdist(Y.y_pred, Y.y_true, "correlation")[:,0]
+def fowlkes_mallows(Y:Contingent)->ProbThres =
+    np.sqrt(recall(Y)*precision(Y))
+
 
 # def precision(y_true, y_pred):
 #     TP,FP,TN,FN = _retrieval_square(y_true, p_pred)
 
-def _wasserstein_gaussian(C1, C2):
-    a = np.trace(C1+C2)
-    sqrtC1 = sqrtm(C1)
-    b = np.trace(sqrtm(sqrtC1@C2@sqrtC1))
+# def _wasserstein_gaussian(C1, C2):
+#     a = np.trace(C1+C2)
+#     sqrtC1 = sqrtm(C1)
+#     b = np.trace(sqrtm(sqrtC1@C2@sqrtC1))
 
-    X = rw.to_array()
-    # print(a,b)
-    return a - 2*b
+#     X = rw.to_array()
+#     # print(a,b)
+#     return a - 2*b
 
-@jaxtyped(typechecker=beartype)
-def bhattacharyya(a:PredProb,b:PredProb):
-    """non-metric distance between distributions"""
-    return np.sqrt(a*b).sum(axis=0)
+# @jaxtyped(typechecker=beartype)
+# def bhattacharyya(a:PredProb,b:PredProb):
+#     """non-metric distance between distributions"""
+#     return np.sqrt(a*b).sum(axis=0)
 
 
-@jaxtyped(typechecker=beartype)
-def hellinger(a:PredProb,b:PredProb):
-    """distance metric between binary distributions"""
-    return np.sqrt(1-bhattacharyya(a,b))
+# @jaxtyped(typechecker=beartype)
+# def hellinger(a:PredProb,b:PredProb):
+#     """distance metric between binary distributions"""
+#     return np.sqrt(1-bhattacharyya(a,b))
 
-@jaxtyped(typechecker=beartype)
-def thres_expect(x_thres:Float[np.ndarray,'t'], score:Float[np.ndarray, 't'])->float:
-    # return 0.5*thres_expect(stats.beta(0.5,0.5),x_thres, score)+0.5*thres_expect(stats.beta(2.5,1.7),x_thres,score)
-    # return thres_expect(stats.beta(2.5,1.7), x_thres,score)
-    return trapezoid(score, x=x_thres)
+# @jaxtyped(typechecker=beartype)
+# def thres_expect(x_thres:Float[np.ndarray,'t'], score:Float[np.ndarray, 't'])->float:
+#     # return 0.5*thres_expect(stats.beta(0.5,0.5),x_thres, score)+0.5*thres_expect(stats.beta(2.5,1.7),x_thres,score)
+#     # return thres_expect(stats.beta(2.5,1.7), x_thres,score)
+#     return trapezoid(score, x=x_thres)
