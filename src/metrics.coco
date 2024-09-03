@@ -3,28 +3,30 @@ from scipy.integrate import trapezoid,cumulative_trapezoid
 # from sklearn.metrics import precision_recall_curve, fbeta_score
 from scipy.linalg import sqrtm
 from scipy.spatial.distance import cdist
+from scipy.stats import ecdf
 from jaxtyping import Bool, jaxtyped, Float
 from beartype import beartype
 from dataclasses import dataclass, field
+from sklearn.preprocessing import minmax_scale
+import warnings
 
 type PredProb = Float[np.ndarray, 'features']
 type ProbThres = Float[np.ndarray, 'batch']
 type PredThres = Bool[np.ndarray, 'batch features']
 
-def gen_thres_vals(x:PredProb)-> ProbThres:
-    return (x
-     |> np.unique
-     |> np.pad$(
-         ?,  # implicit 0,1 thres endpts
-         ((1,1)),
-         constant_values=(0,1)
-     )
-    )
 
+def quantile_tf(x:PredProb)-> (ProbThres,PredProb):
+    cdf = ecdf(x).cdf
+    p = cdf.probabilities |> np.pad$(?, ((1,1)), constant_values=(0,1))
+    return p, cdf.evaluate(x)
 
+def minmax_tf(x:PredProb)-> (ProbTrhes, PredProb):
+    x_p = minmax_scale(x, feature_range=(1e-5, 1 - 1e-5))
+    p = np.pad(np.unique(x_p), ((1,1)), constant_values=(0,1))
+    return p, x_p
 
-def _all_thres(x:PredProb, t:ProbThres)->PredThres:
-    return np.less_equal.outer(t, x)
+# def _all_thres(x:PredProb, t:ProbThres)->PredThres:
+    # return np.less_equal.outer(t, x)
 
 #TODO use density (.getnnz()) for sparse via dispatching
 def _bool_contract(A:PredThres,B:PredThres) =(A*B).sum(axis=-1)
@@ -38,10 +40,13 @@ class Contingent:
     y_true: PredThres
     y_pred: PredThres
 
+    weights: ProbThres|None = None
+
     TP:ProbThres = field(init=False)
     FP:ProbThres = field(init=False)
     FN:ProbThres = field(init=False)
     TN:ProbThres = field(init=False)
+
 
     PP:ProbThres = field(init=False)
     PN:ProbThres = field(init=False)
@@ -74,6 +79,19 @@ class Contingent:
         self.TNR = np.ma.divide(self.TN, self.N)
 
 
+    @classmethod
+    def from_scalar[T](cls:Type[T], y_true, x:PredProb? )->T?:
+        # p, x_p = quantile_tf(x)
+        if x is None:
+            warnings.warn("`None` value recieved, passing the buck...")
+            return None
+        p, x_p = minmax_tf(x)
+        y_preds = np.less_equal.outer(p,x_p)
+
+        return cls(y_true, y_preds, weights=p)
+
+
+
     @property
     def f_beta(self, beta)= f_beta(beta, self)
 
@@ -90,7 +108,7 @@ class Contingent:
     def mcc(self)=matthews_corrcoef(self)
 
     @property
-    def G(self) = folkes_mallows(self)
+    def G(self) = fowlkes_mallows(self)
 
 # def PPV(Yt:PredThres,Pt:PredThres) = TP/PP
 # def NPV(Yt:PredThres,Pt:PredThres) = TN/PN
@@ -113,8 +131,8 @@ def matthews_corrcoef(Y:Contingent)->ProbThres = (l - r).filled(0) where:
     # return 1-cdist(Y.y_pred, Y.y_true, "correlation")[:,0]
 
     m = np.vstack([Y.TPR,Y.TNR,Y.PPV,Y.NPV])
-    l = np.sqrt(m)).prod(axis=0)
-    r = np.sqrt(1-m)).prod(axis=0)
+    l = np.sqrt(m).prod(axis=0)
+    r = np.sqrt(1-m).prod(axis=0)
 
 def fowlkes_mallows(Y:Contingent)->ProbThres =
     np.sqrt(recall(Y)*precision(Y))

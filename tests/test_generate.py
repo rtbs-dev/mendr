@@ -5,8 +5,8 @@ import hypothesis.strategies as st
 import hypothesis.extra.numpy as hnp
 from serde.json import to_json, from_json
 import sparse
-from nist_gmd.one_hot import rw_jumps_to_coords
-from nist_gmd.io import SerialSparse
+from mendr.one_hot import rw_jumps_to_coords
+from mendr.io import SerialSparse
 
 
 make_jumps = hnp.arrays(

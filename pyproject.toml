@@ -18,6 +18,7 @@ jaxtyping = "^0.2.25"
 beartype = "^0.17.2"
 pyserde = "^0.14.0"
 sparse = "^0.15.1"
+polars = "^0.20.21"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -25,7 +26,6 @@ ipykernel = "^6.29.2"
 coconut = {extras = ["kernel"], version = "^3.0.4"}
 hypothesis = {extras = ["numpy"], version = "^6.98.12"}
 pytest = "^8.0.2"
-black = "^24.2.0"
 hypothesis-networkx = "^0.3.0"
 dvc = "^3.49.0"
 
@@ -35,9 +35,13 @@ dvc = "^3.49.0"
 autoregistry = "^1.1.2"
 affinis = {path = "../affinis"}
 dvclive = {extras = ["markdown", "sklearn"], version = "^3.45.0"}
+seaborn = "^0.13.2"
+awkward-pandas = "^2023.8.0"
+great-tables = "^0.5.0"
+statsmodels = "^0.14.2"
 
 [tool.poetry.scripts]
-gmd-nist = 'mendr.__main__:main'
+mendr-simulate = 'mendr.__main__:main'
 # gmd-nist-rw = 'nist_gmd.main:random-graph-walks'
 
 [build-system]
