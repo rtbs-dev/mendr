@@ -1,0 +1,512 @@
+---
+jupyter:
+  jupytext:
+    formats: 'ipynb,qmd'
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.0
+  kernelspec:
+    display_name: mendr
+    language: python
+    name: mendr
+---
+
+```{python}
+import pandas as pd
+import awkward as ak
+import awkward_pandas as akpd
+import seaborn as sns
+# from great_tables import GT
+import json
+from pathlib import Path
+import numpy as np
+import matplotlib.pyplot as plt
+# pd.DataFrame.to_dict(
+```
+
+```{python}
+# df = (
+#     # akpd.from_awkward(
+#     ak.to_dataframe(
+#         ak.from_json(Path('res.json'))
+#     )
+#     .rename(dict(zip(
+#         ['fowlkes_mallows','matthews_corrcoef','F1'],
+#         ['F-M','MCC','F1']
+#     )), axis=1)
+#     # .ak.to_columns(extract_all=True)
+# )
+df = pd.read_csv('res2.csv', index_col=0)
+df.head()
+```
+
+```{python}
+# GT(df.head(10)).fmt_nanoplot(columns='matthews_corrcoef')
+```
+
+```{python}
+tidy = (
+    df
+    # .drop(['thres-vals', 'F1','matthews_corrcoef', 'fowlkes_mallows'], axis=1)
+    .melt(
+        id_vars=['ID', 'kind','name','n-nodes','n-walks','n-jumps',
+                 'med-node-ct','iqr-node-ct','med-actv-ct','iqr-actv-ct',
+                 'seconds'], 
+        value_vars=['F-M','MCC','F1', 'APS'],
+        value_name='score', var_name='metric'
+    )
+    .astype({
+        'kind':'category', 
+        'name':'category', 
+        'metric': 'category',
+        'ID':str,
+    })
+    .assign(**{
+        'kind': lambda df: df['kind'].cat.rename_categories({'TR':'Tree','BL':'Block'}),
+        # 'seconds-log': lambda df: np.log10(df['seconds']),
+        # 'jump-density':lambda df: df['n-jumps']/df['n-nodes'],
+        # 'jump-sparsity': lambda df: 1-df['jump-density'],
+        # 'walk-density': lambda df: df['n-walks']/df['n-nodes'],
+        # 'nodes-norm': lambda df: 1/df['walk-density'],
+        # https://www.researchgate.net/publication/271685622_User%27s_Guide_to_Ratio_Variables
+        'sec-per-walk': lambda df: df['seconds']/df['n-walks'],
+        'logsec-per-walk': lambda df: np.log(df['sec-per-walk']),
+        'node-exposure': lambda df: df['n-nodes']/df['n-walks'],
+        'inv-walks': lambda df: 1/df['n-walks'],
+        # 'jump-sparsity'
+        'tot-jumps': lambda df: df['n-jumps']*df['n-walks'],
+        'MIR': lambda df: 1/df.groupby(['ID','metric'], observed=True)['score'].rank(ascending=False),
+        'failed': lambda df: df['score'].isna()
+    })
+    
+)
+tidy.dtypes#.kind
+```
+
+```{python}
+# 1/tidy.groupby(['ID','metric'])['score'].rank(ascending=False)
+
+# tidy[tidy.failed & (tidy.metric=='seconds')]
+# tidy[tidy.metric=='seconds']
+tidy#[tidy.failed]
+```
+
+```{python}
+sns.set_theme(font='serif',palette='Set2', context='paper', style='ticks')
+alg_order=['TS','TSi','GL','HSS','RP','CS','eOT',]
+metric_order=['MCC','F-M','APS']
+
+sns.catplot(
+    tidy, 
+    # x='name', y='score',
+    x='score',y='name',
+    kind='box', hue='metric',
+    row='kind', 
+    orient='h',
+    # row='n-nodes',
+    # row_order=['TR','BL'],
+    order=alg_order,
+    hue_order=metric_order,
+    aspect=1, height=3,
+    # margin_titles=True,
+
+)
+```
+
+```{python}
+sns.catplot(
+    tidy, 
+    x='MIR', 
+    y='name',
+    orient='h',
+    kind='bar', 
+    hue='metric',
+    estimator='mean',
+    # errorbar=('pi',50),
+    row='kind', 
+    # row='n-nodes',
+    # col_order=['TR','BL'],
+    order=alg_order,
+    hue_order=metric_order,
+    aspect=1, height=3,
+    
+    # margin_titles=True,
+)
+```
+
+```{python}
+# import seaborn.objects as so
+def plot_median(data,**kwargs):
+    m = data.median()
+    plt.axhline(m, **kwargs)
+
+# (
+#     so.Plot(tidy, x='jump-density', y='score',edgecolor='kind',color=None)
+#     .facet(col='name',row='metric')
+#     .add(so.Dot(), marker='kind')
+#     .add(so.Line(color=".2"), so.PolyFit())
+#     .theme({**sns.axes_style('ticks')})
+# )
+g = sns.FacetGrid(
+    tidy, row="metric", col="name",
+    margin_titles=True, aspect=1, height=2,
+    row_order=metric_order,
+    col_order=alg_order,
+    hue='metric',
+    hue_order=metric_order,
+    # hue = 'kind',
+    # hue_kws={
+    #     'marker':['1','2'], 
+    # }
+)
+g.set(
+    ylim=(-0.1,1.1), xlim=(0.09,11), 
+    xscale="log", clip_on=False
+)
+
+g.map(
+    sns.regplot, "jump-density", "score", 
+    # color=".3", 
+    # x_bins=10,x_ci='sd',
+    logx=True, 
+    scatter_kws={'alpha':0.5},
+    # line_kws={'alpha':1.}
+    line_kws={'ls':'--','color':'k'},
+    marker='1',
+    #scatter_kws={'fillstyle':'none'}
+
+)
+g.add_legend()
+g.map(plot_median, 'score', color='r', alpha=0.2)
+
+```
+
+```{python}
+import matplotlib.pyplot as plt
+
+
+g = sns.FacetGrid(
+    tidy, row="metric", col="name",
+    margin_titles=True, aspect=1, height=2,
+    row_order=metric_order,
+    col_order=alg_order,
+    hue='metric',
+    hue_order=metric_order,
+    # hue = 'kind', 
+    # hue_kws={
+    #     'marker':['1','2'], 
+    #     # 'line_kws':[{'color':sns.color_palette('dark')[0],'ls':':'},{'color':'sienna','ls':':'}]},
+    # }
+)
+g.set(
+    ylim=(-0.1,1.1), xlim=(0.09,11), 
+    xscale="log", clip_on=False
+)
+
+g.map(
+    sns.regplot, "walk-density", "score", 
+    # color=".3", 
+    logx=True, 
+    scatter_kws={'alpha':0.5},
+    # line_kws={'alpha':1.}
+    line_kws={'ls':'--','color':'k'},
+    marker='1',
+    # marker='.'#,scatter_kws={'fillstyle':'none'}
+
+)
+g.add_legend()
+g.map(plot_median, 'score', color='r', alpha=0.2)
+```
+
+```{python}
+import matplotlib as mpl
+import seaborn.objects as so
+f = mpl.figure.Figure(figsize=(8, 6))
+sf1, sf2 = f.subfigures(2, 1, height_ratios=(2,3))
+
+theme_config = {**sns.axes_style('ticks')}|{"axes.spines.top": False, "axes.spines.right": False}
+
+# med-node-ct','iqr-node-ct','med-actv-ct','iqr-actv-ct'
+
+(so.Plot(tidy, x='n-nodes',y='sec-per-walk',color='name')
+ # .add(so.Dots(marker='.'), so.Dodge(), so.Jitter(.3))
+ .add(so.Range(),so.Est(errorbar=("pi",50)), so.Dodge())
+ .add(so.Dot(), so.Agg('median'), so.Dodge())
+ .add(so.Dots(alpha=0.1, pointsize=2), so.Dodge(gap=-1.5), so.Jitter(0.3) )
+ .scale(
+     x=(so.Nominal()
+        # .tick(at=[10,30,100,300])
+        # .label(like="{x:.0f}")
+       ), 
+     y='log',
+     # marker=so.Nominal(["_", "."]),
+     color=so.Nominal('Set2',order=['TS', 'GL', 'HSS'])
+ )
+ .theme(theme_config)
+ .on(sf1)
+ .plot()
+ # .add(so.Range(
+)
+
+
+p = (so.Plot(tidy, y='sec-per-walk',color='name',marker='failed', pointsize='failed')
+ .pair(x=['med-node-ct','med-actv-ct'])
+ # .facet(row='name', order=['TS', 'GL','HSS'])
+ .add(so.Dots())
+ .scale(
+     x='log', y='log',
+     marker=so.Nominal([".", "x"]),
+     color=so.Nominal('Set2',order=['TS', 'GL','HSS']),
+     pointsize=so.Nominal([2.,5.],order=[False,True]),
+ )
+ .theme(theme_config)
+ .on(sf2)
+ .layout(engine='constrained',extent=(0, 0, 0.95, 1))
+ .plot()
+ # .add(so.Line(color=".2"), so.PolyFit())
+)
+f.legends.pop(0)
+# f.legends[0].get_bbox_to_anchor()#set_bbox_to_anchor((0.9,0.5)).
+p
+# so.Plot.layout(extend=
+```
+
+
+```{python}
+
+# sns.relplot(
+g = sns.PairGrid(
+    tidy[tidy['name'].isin(['TS'])], #row="metric", col="name",
+    x_vars=['med-actv-ct', 'med-node-ct'],
+    y_vars=['sec-per-walk'],
+    hue = 'n-nodes', 
+    palette='Set2',
+
+)
+g.set(
+    # ylim=(-0.1,1.1), 
+    # xlim=(0.09,11), 
+    xscale="log", 
+    yscale='log',
+    clip_on=False,
+)
+
+g.map(
+    sns.scatterplot, marker='.'#, logx=True, truncate=True,
+)
+g.add_legend()
+```
+
+```{python}
+g = sns.relplot(
+    tidy,
+    # tidy.query("name in ['GL','TS']"),
+    # x='med-actv-ct',
+    x='med-node-ct',
+
+    # x='jump-density',
+    # y='seconds-log',
+    y='sec-per-walk',
+    col='name',
+    col_order=['TS','GL'], 
+    hue='n-nodes', style='n-nodes',
+    # markers=['+','.','x','s'],
+    palette='Set2',
+    # x_partial='n-nodes',
+    # logx=True,
+    # robust=True,
+)
+
+# ticks = 
+# ax.get_yaxis().set_major_formatter(formatter)
+# ax.get_yaxis().set_major_formatter(formatter)
+g.set(
+    xscale='log',
+    # yticks=ticks,
+    # xlabel='Activation Fraction',
+    # ylabel='seconds',
+    yscale='log',
+    clip_on=False,
+)
+```
+
+```{python}
+g = sns.lmplot(
+    tidy,
+    # tidy.query("name in ['GL','TS']"),
+    # x='n-jumps',
+    x='med-actv-ct',
+    y='logsec-per-walk',
+    # y='seconds',
+    # col='name',
+    hue='name',
+    hue_order=['TS','GL'], 
+    # style='n-nodes',
+    # hue='n-nodes', style='n-nodes',
+    markers=['+','.'],
+    palette='Set2',
+    # x_partial='jump-sparsity',
+    logx=True,
+    # robust=True,
+)
+
+# ticks = 
+# ax.get_yaxis().set_major_formatter(formatter)
+# ax.get_yaxis().set_major_formatter(formatter)
+g.set(
+    xscale='log',
+    # yticks=ticks,
+    # xlabel='Activation Fraction',
+    ylabel='time-per-observation (s)',
+    # yscale='log'
+)
+from matplotlib.ticker import LogFormatterExponent, FuncFormatter
+formatter = lambda x, pos: '$10^{'+f'{x:g}'+'}$' if (x//1==x) else ''
+for ax in g.axes.flat:
+    ax.yaxis.set_major_formatter(FuncFormatter(formatter))
+```
+
+```{python}
+g = sns.lmplot(
+    tidy,
+    # tidy.query("name in ['GL','TS']"),
+    # x='n-jumps',
+    x='med-node-ct',
+    y='logsec-per-walk',
+    # y='seconds',
+    # col='name',
+    hue='name',
+    hue_order=['TS','GL'], 
+    # style='n-nodes',
+    # hue='n-nodes', style='n-nodes',
+    markers=['+','.'],
+    palette='Set2',
+    # x_partial='n-nodes',
+    logx=True,
+    # robust=True,
+)
+
+# ticks = 
+# ax.get_yaxis().set_major_formatter(formatter)
+# ax.get_yaxis().set_major_formatter(formatter)
+g.set(
+    xscale='log',
+    # yticks=ticks,
+    # xlabel='Activation Fraction',
+    ylabel='time-per-observation (s)',
+    # yscale='log'
+)
+from matplotlib.ticker import LogFormatterExponent, FuncFormatter
+formatter = lambda x, pos: '$10^{'+f'{x:g}'+'}$' if (x//1==x) else ''
+for ax in g.axes.flat:
+    ax.yaxis.set_major_formatter(FuncFormatter(formatter))
+```
+
+```{python}
+from scipy.linalg import lstsq
+
+# f = mpl.figure.Figure(figsize=(8, 6))
+# sf1, sf2 = f.subfigures(2, 1, height_ratios=(2,3))
+    # x=,
+
+
+x= tidy.query("name=='TS'")[['n-walks','med-actv-ct', 'med-node-ct']].values 
+M = np.c_[np.ones(x.shape[0]),np.log10(x)]
+# M = np.c_[np.ones(x.shape[0]),x]
+y = tidy.query("name=='TS'")['sec-per-walk'].values
+p,res,rnk,s = lstsq(M,np.log10(y))
+# p,res,rnk,s = lstsq(M,y)
+print(p)
+# plt.scatter( tidy.query("name=='TS'")['med-actv-ct'],y-M@p, color='dodgerblue', marker='.')
+plt.scatter( tidy.query("name=='TS'")['med-node-ct'],y-M@p, color='dodgerblue',marker='+')
+
+# plt.scatter( tidy.query("name=='TS'")['med-node-ct'],np.power(10,y-M@p), marker='.')
+
+
+x= tidy.query("name=='GL'")[['n-walks','med-actv-ct', 'med-node-ct']].values 
+M = np.c_[np.ones(x.shape[0]),np.log10(x)]
+# M = np.c_[np.ones(x.shape[0]),x]
+y = tidy.query("name=='GL'")['sec-per-walk'].values
+p,res,rnk,s = lstsq(M,np.log(y))
+# p,res,rnk,s = lstsq(M,y)
+print(p)
+# plt.scatter( tidy.query("name=='GL'")['med-node-ct'],np.power(10,y-M@p), marker='+')
+# plt.scatter( tidy.query("name=='GL'")['med-actv-ct'],y-M@p,color='xkcd:rust', marker='.')
+plt.scatter( tidy.query("name=='GL'")['med-node-ct'],y-M@p,color='xkcd:rust', marker='+')
+
+plt.xscale('log')
+plt.yscale('log')
+```
+
+```{python}
+xrange = np.logspace(0,2)
+x= tidy.query("name=='TS'")[['n-walks','med-actv-ct', 'med-node-ct']].values 
+M = np.c_[np.ones(x.shape[0]),np.log10(x)]
+# M = np.c_[np.ones(x.shape[0]),x]
+y = tidy.query("name=='TS'")['sec-per-walk'].values
+p,res,rnk,s = lstsq(M,np.log10(y))
+# p,res,rnk,s = lstsq(M,y)
+print(p)
+plt.scatter( tidy.query("name=='TS'")['med-actv-ct'],y-M@p, color='dodgerblue', marker='.')
+# plt.plot(M@xrange[:,...].T)
+# plt.scatter( tidy.query("name=='TS'")['med-node-ct'],y-M@p, color='dodgerblue',marker='+')
+
+# plt.scatter( tidy.query("name=='TS'")['med-node-ct'],np.power(10,y-M@p), marker='.')
+
+
+x= tidy.query("name=='GL'")[['n-walks','med-actv-ct', 'med-node-ct']].values 
+M = np.c_[np.ones(x.shape[0]),np.log10(x)]
+# M = np.c_[np.ones(x.shape[0]),x]
+y = tidy.query("name=='GL'")['sec-per-walk'].values
+p,res,rnk,s = lstsq(M,np.log(y))
+# p,res,rnk,s = lstsq(M,y)
+print(p)
+# plt.scatter( tidy.query("name=='GL'")['med-node-ct'],np.power(10,y-M@p), marker='+')
+plt.scatter( tidy.query("name=='GL'")['med-actv-ct'],y-M@p,color='xkcd:rust', marker='.')
+# plt.scatter( tidy.query("name=='GL'")['med-node-ct'],y-M@p,color='xkcd:rust', marker='+')
+
+plt.xscale('log')
+plt.yscale('log')
+```
+
+```{python}
+# plt.scatter( x[:,1],np.power(10,y-M@p))
+# plt.xscale('log')
+sns.histplot(tidy.query('name=="TS"').pipe(lambda df: df['seconds']/df['n-walks']))
+# plt.yscale('log')
+```
+
+```{python}
+import statsmodels.api as sm
+
+from patsy import dmatrices
+```
+
+```{python}
+g = sns.PairGrid(
+    tidy[tidy['name'].isin(['GL'])], #row="metric", col="name",
+    x_vars=['n-nodes', 'jump-sparsity','walk-sparsity'],
+    y_vars=['seconds'],
+    hue = 'n-nodes', 
+    palette='Set2',
+
+)
+g.set(
+    # ylim=(-0.1,1.1), 
+    # xlim=(0.09,11), 
+    xscale="log", 
+    yscale='log',
+    clip_on=False,
+)
+
+g.map(
+    sns.scatterplot, marker='.'#, logx=True, truncate=True,
+)
+g.add_legend()
+```
+
+```{python}
+sns.histplot(tidy, x='jump-sparsity',y='walk-sparsity', log_scale=True)
+```
