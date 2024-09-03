@@ -273,7 +273,6 @@ p
 # so.Plot.layout(extend=
 ```
 
-
 ```{python}
 
 # sns.relplot(

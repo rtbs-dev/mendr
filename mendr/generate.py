@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa47fa0ad
+# __coconut_hash__ = 0xb62773e8
 
 # Compiled with Coconut version 3.1.1
 
@@ -34,7 +34,7 @@ if _coconut_cached__coconut__ is None or getattr(_coconut_cached__coconut__, "_c
                         _coconut_v_type.__module__ = _coconut_full_module_name
         _coconut_sys.modules[_coconut_full_module_name] = _coconut__coconut__
 from __coconut__ import *
-from __coconut__ import _coconut_tail_call, _coconut_tco, _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _namedtuple_of, _coconut, _coconut_Expected, _coconut_MatchError, _coconut_SupportsAdd, _coconut_SupportsMinus, _coconut_SupportsMul, _coconut_SupportsPow, _coconut_SupportsTruediv, _coconut_SupportsFloordiv, _coconut_SupportsMod, _coconut_SupportsAnd, _coconut_SupportsXor, _coconut_SupportsOr, _coconut_SupportsLshift, _coconut_SupportsRshift, _coconut_SupportsMatmul, _coconut_SupportsInv, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_complex_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_raise, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op, _coconut_arr_concat_op, _coconut_mk_anon_namedtuple, _coconut_matmul, _coconut_py_str, _coconut_flatten, _coconut_multiset, _coconut_back_none_pipe, _coconut_back_none_star_pipe, _coconut_back_none_dubstar_pipe, _coconut_forward_none_compose, _coconut_back_none_compose, _coconut_forward_none_star_compose, _coconut_back_none_star_compose, _coconut_forward_none_dubstar_compose, _coconut_back_none_dubstar_compose, _coconut_call_or_coefficient, _coconut_in, _coconut_not_in, _coconut_attritemgetter, _coconut_if_op, _coconut_CoconutWarning
+from __coconut__ import _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _namedtuple_of, _coconut, _coconut_Expected, _coconut_MatchError, _coconut_SupportsAdd, _coconut_SupportsMinus, _coconut_SupportsMul, _coconut_SupportsPow, _coconut_SupportsTruediv, _coconut_SupportsFloordiv, _coconut_SupportsMod, _coconut_SupportsAnd, _coconut_SupportsXor, _coconut_SupportsOr, _coconut_SupportsLshift, _coconut_SupportsRshift, _coconut_SupportsMatmul, _coconut_SupportsInv, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_complex_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_raise, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op, _coconut_arr_concat_op, _coconut_mk_anon_namedtuple, _coconut_matmul, _coconut_py_str, _coconut_flatten, _coconut_multiset, _coconut_back_none_pipe, _coconut_back_none_star_pipe, _coconut_back_none_dubstar_pipe, _coconut_forward_none_compose, _coconut_back_none_compose, _coconut_forward_none_star_compose, _coconut_back_none_star_compose, _coconut_forward_none_dubstar_compose, _coconut_back_none_dubstar_compose, _coconut_call_or_coefficient, _coconut_in, _coconut_not_in, _coconut_attritemgetter, _coconut_if_op, _coconut_CoconutWarning
 if _coconut_pop_path:
     _coconut_sys.path.pop(0)
 try:
@@ -72,107 +72,95 @@ if "__annotations__" not in _coconut.locals():  #13 (line in Coconut source)
     __annotations__ = {}  # type: ignore  #13 (line in Coconut source)
 __annotations__["RandGraphType"] = _coconut.typing.TypeAlias  #13 (line in Coconut source)
 
-try:  #21 (line in Coconut source)
-    _coconut_addpattern_0 = _coconut_addpattern(_graph_gen_dispatch)  # type: ignore  #21 (line in Coconut source)
-except _coconut.NameError:  #21 (line in Coconut source)
-    _coconut.warnings.warn("Deprecated use of 'addpattern def _graph_gen_dispatch' with no pre-existing '_graph_gen_dispatch' function (use 'match def _graph_gen_dispatch' for the first definition or switch to 'case def' syntax)", _coconut_CoconutWarning)  #21 (line in Coconut source)
-    _coconut_addpattern_0 = lambda f: f  #21 (line in Coconut source)
-@_coconut_addpattern_0  #21 (line in Coconut source)
-@_coconut_mark_as_match  #21 (line in Coconut source)
-def _graph_gen_dispatch(_coconut_match_first_arg=_coconut_sentinel, *_coconut_match_args, **_coconut_match_kwargs):  #21 (line in Coconut source)
-    _coconut_match_check_0 = False  #21 (line in Coconut source)
-    _coconut_FunctionMatchError = _coconut_get_function_match_error()  #21 (line in Coconut source)
-    if _coconut_match_first_arg is not _coconut_sentinel:  #21 (line in Coconut source)
-        _coconut_match_args = (_coconut_match_first_arg,) + _coconut_match_args  #21 (line in Coconut source)
-    if _coconut.len(_coconut_match_args) == 1:  #21 (line in Coconut source)
-        if _coconut_match_args[0] == 'tree':  #21 (line in Coconut source)
-            if not _coconut_match_kwargs:  #21 (line in Coconut source)
-                _coconut_match_check_0 = True  #21 (line in Coconut source)
-    if not _coconut_match_check_0:  #21 (line in Coconut source)
-        raise _coconut_FunctionMatchError("addpattern def _graph_gen_dispatch('tree') = nx.random_labeled_tree", _coconut_match_args)  #21 (line in Coconut source)
-
-    return nx.random_labeled_tree  #21 (line in Coconut source)
-
-try:  #22 (line in Coconut source)
-    _coconut_addpattern_1 = _coconut_addpattern(_graph_gen_dispatch)  # type: ignore  #22 (line in Coconut source)
-except _coconut.NameError:  #22 (line in Coconut source)
-    _coconut.warnings.warn("Deprecated use of 'addpattern def _graph_gen_dispatch' with no pre-existing '_graph_gen_dispatch' function (use 'match def _graph_gen_dispatch' for the first definition or switch to 'case def' syntax)", _coconut_CoconutWarning)  #22 (line in Coconut source)
-    _coconut_addpattern_1 = lambda f: f  #22 (line in Coconut source)
-@_coconut_addpattern_1  #22 (line in Coconut source)
-@_coconut_mark_as_match  #22 (line in Coconut source)
-def _graph_gen_dispatch(_coconut_match_first_arg=_coconut_sentinel, *_coconut_match_args, **_coconut_match_kwargs):  #22 (line in Coconut source)
-    _coconut_match_check_1 = False  #22 (line in Coconut source)
-    _coconut_FunctionMatchError = _coconut_get_function_match_error()  #22 (line in Coconut source)
-    if _coconut_match_first_arg is not _coconut_sentinel:  #22 (line in Coconut source)
-        _coconut_match_args = (_coconut_match_first_arg,) + _coconut_match_args  #22 (line in Coconut source)
-    if _coconut.len(_coconut_match_args) == 1:  #22 (line in Coconut source)
-        if _coconut_match_args[0] == 'block':  #22 (line in Coconut source)
-            if not _coconut_match_kwargs:  #22 (line in Coconut source)
-                _coconut_match_check_1 = True  #22 (line in Coconut source)
-    if not _coconut_match_check_1:  #22 (line in Coconut source)
-        raise _coconut_FunctionMatchError("addpattern def _graph_gen_dispatch('block') =", _coconut_match_args)  #22 (line in Coconut source)
-
-    return lambda n, *args, **kws: (nx.line_graph)(_graph_gen_dispatch('tree')(n + 1, *args, **kws))  #23 (line in Coconut source)
+def _scalefree_sparse(n, m=None, seed=DEFAULT_RNG, **kws):  #21 (line in Coconut source)
+    m = seed.choice([1, 2]) if m is None else m  #22 (line in Coconut source)
+    return nx.barabasi_albert_graph(n, m, seed=seed, **kws)  #23 (line in Coconut source)
 
 
-@_coconut_tco  #25 (line in Coconut source)
-def _scalefree_sparse(n, m=None, rng=DEFAULT_RNG, **kws):  #25 (line in Coconut source)
-    m = rng.choice([1, 2]) if m is None else m  #26 (line in Coconut source)
-    return _coconut_tail_call(nx.barabasi_albert_graph, n, m, seed=rng, **kws)  #27 (line in Coconut source)
+if _coconut.typing.TYPE_CHECKING:  #25 (line in Coconut source)
+    _coconut_typevar_T_0 = _coconut.typing.TypeVar("_coconut_typevar_T_0", bound=RandGraphType)  #25 (line in Coconut source)
+    @_coconut_mark_as_match  #25 (line in Coconut source)
+    def _graph_gen_dispatch(kind,  # type: _coconut_typevar_T_0  #25 (line in Coconut source)
+        *args, **kws):  #25 (line in Coconut source)
+# type: (...) -> nx.Graph
 
+        return _coconut.typing.cast(_coconut.typing.Any, _coconut.Ellipsis)  #25 (line in Coconut source)
+else:  #25 (line in Coconut source)
+    @_coconut_mark_as_match  #25 (line in Coconut source)
+    def _graph_gen_dispatch(_coconut_match_first_arg=_coconut_sentinel, *_coconut_match_args, **_coconut_match_kwargs):  #25 (line in Coconut source)
 
-try:  #29 (line in Coconut source)
-    _coconut_addpattern_2 = _coconut_addpattern(_graph_gen_dispatch)  # type: ignore  #29 (line in Coconut source)
-except _coconut.NameError:  #29 (line in Coconut source)
-    _coconut.warnings.warn("Deprecated use of 'addpattern def _graph_gen_dispatch' with no pre-existing '_graph_gen_dispatch' function (use 'match def _graph_gen_dispatch' for the first definition or switch to 'case def' syntax)", _coconut_CoconutWarning)  #29 (line in Coconut source)
-    _coconut_addpattern_2 = lambda f: f  #29 (line in Coconut source)
-@_coconut_addpattern_2  #29 (line in Coconut source)
-@_coconut_mark_as_match  #29 (line in Coconut source)
-def _graph_gen_dispatch(_coconut_match_first_arg=_coconut_sentinel, *_coconut_match_args, **_coconut_match_kwargs):  #29 (line in Coconut source)
-    _coconut_match_check_2 = False  #29 (line in Coconut source)
-    _coconut_FunctionMatchError = _coconut_get_function_match_error()  #29 (line in Coconut source)
-    if _coconut_match_first_arg is not _coconut_sentinel:  #29 (line in Coconut source)
-        _coconut_match_args = (_coconut_match_first_arg,) + _coconut_match_args  #29 (line in Coconut source)
-    if _coconut.len(_coconut_match_args) == 1:  #29 (line in Coconut source)
-        if _coconut_match_args[0] == 'scalefree':  #29 (line in Coconut source)
-            if not _coconut_match_kwargs:  #29 (line in Coconut source)
-                _coconut_match_check_2 = True  #29 (line in Coconut source)
-    if not _coconut_match_check_2:  #29 (line in Coconut source)
-        raise _coconut_FunctionMatchError("addpattern def _graph_gen_dispatch('scalefree') = _scalefree_sparse", _coconut_match_args)  #29 (line in Coconut source)
+        _coconut_match_check_0 = False  #25 (line in Coconut source)
+        _coconut_FunctionMatchError = _coconut_get_function_match_error()  #25 (line in Coconut source)
+        if _coconut_match_first_arg is not _coconut_sentinel:  #25 (line in Coconut source)
+            _coconut_match_args = (_coconut_match_first_arg,) + _coconut_match_args  #25 (line in Coconut source)
+        _coconut_match_kwargs_store = _coconut_match_kwargs  #25 (line in Coconut source)
+        if not _coconut_match_check_0:  #25 (line in Coconut source)
+            _coconut_match_kwargs = _coconut_match_kwargs_store.copy()  #25 (line in Coconut source)
+            if _coconut.len(_coconut_match_args) == 1:  #25 (line in Coconut source)
+                if _coconut_match_args[0] == 'tree':  #25 (line in Coconut source)
+                    if not _coconut_match_kwargs:  #25 (line in Coconut source)
+                        _coconut_match_check_0 = True  #25 (line in Coconut source)
 
-    return _scalefree_sparse  #29 (line in Coconut source)
+            if _coconut_match_check_0:  #25 (line in Coconut source)
+
+                    return nx.random_labeled_tree  #27 (line in Coconut source)
+
+        if not _coconut_match_check_0:  #28 (line in Coconut source)
+            _coconut_match_kwargs = _coconut_match_kwargs_store.copy()  #28 (line in Coconut source)
+            if _coconut.len(_coconut_match_args) == 1:  #28 (line in Coconut source)
+                if _coconut_match_args[0] == 'block':  #28 (line in Coconut source)
+                    if not _coconut_match_kwargs:  #28 (line in Coconut source)
+                        _coconut_match_check_0 = True  #28 (line in Coconut source)
+
+            if _coconut_match_check_0:  #28 (line in Coconut source)
+
+                    return lambda n, *args, **kws: (nx.line_graph)(_graph_gen_dispatch('tree')(n + 1, *args, **kws))  #29 (line in Coconut source)
+
+        if not _coconut_match_check_0:  #30 (line in Coconut source)
+            _coconut_match_kwargs = _coconut_match_kwargs_store.copy()  #30 (line in Coconut source)
+            if _coconut.len(_coconut_match_args) == 1:  #30 (line in Coconut source)
+                if _coconut_match_args[0] == 'scalefree':  #30 (line in Coconut source)
+                    if not _coconut_match_kwargs:  #30 (line in Coconut source)
+                        _coconut_match_check_0 = True  #30 (line in Coconut source)
+
+            if _coconut_match_check_0:  #30 (line in Coconut source)
+
+                    return _scalefree_sparse  #30 (line in Coconut source)
+
 # addpattern def _graph_gen_dispatch(f `is_bearable` ReturnsGraph) = f
 
 
 
-@beartype  #33 (line in Coconut source)
-@_coconut_tco  #34 (line in Coconut source)
-def graph_gen(kind,  # type: RandGraphType  #34 (line in Coconut source)
-    n,  # type: PosInt  #34 (line in Coconut source)
-    rng=DEFAULT_RNG, **kws):  #34 (line in Coconut source)
+        if not _coconut_match_check_0:  #35 (line in Coconut source)
+            raise _coconut_FunctionMatchError('case def _graph_gen_dispatch[T:RandGraphType]:', _coconut_match_args)  #35 (line in Coconut source)
+
+
+@beartype  #35 (line in Coconut source)
+def graph_gen(kind,  # type: RandGraphType  #36 (line in Coconut source)
+    n,  # type: PosInt  #36 (line in Coconut source)
+    rng=DEFAULT_RNG, **kws):  #36 (line in Coconut source)
     """generate a supported random graph of size `n`
 
     supports the use of a custom random state (e.g. `numpy.random.default_rng`)
     Other keyword args get passed to the underlying random graph generator function
-    """  #39 (line in Coconut source)
-    return _coconut_tail_call(_graph_gen_dispatch(kind), n, seed=rng, **kws)  #40 (line in Coconut source)
+    """  #41 (line in Coconut source)
+    return _graph_gen_dispatch(kind)(n, seed=rng, **kws)  #42 (line in Coconut source)
 
 
-@beartype  #42 (line in Coconut source)
-@_coconut_tco  #43 (line in Coconut source)
-def walk_randomly(graph,  # type: cg.csrgraph  #43 (line in Coconut source)
-    n_jumps=None,  # type: _coconut.typing.Union[int, None]  #43 (line in Coconut source)
-    n_walks=None,  # type: _coconut.typing.Union[int, None]  #43 (line in Coconut source)
-    rng=DEFAULT_RNG):  #43 (line in Coconut source)
+@beartype  #44 (line in Coconut source)
+def walk_randomly(graph,  # type: cg.csrgraph  #45 (line in Coconut source)
+    n_jumps=None,  # type: _coconut.typing.Union[int, None]  #45 (line in Coconut source)
+    n_walks=None,  # type: _coconut.typing.Union[int, None]  #45 (line in Coconut source)
+    rng=DEFAULT_RNG):  #45 (line in Coconut source)
     """vectorized wrapper on CSGraph, with uniformly random starting nodes.
     TODO: allow arbitrary nodes selection distribution to be passed.
-    """  #51 (line in Coconut source)
-    n = graph.mat.shape[0]  #52 (line in Coconut source)
+    """  #53 (line in Coconut source)
+    n = graph.mat.shape[0]  #54 (line in Coconut source)
 # rate_param = 1/size
-    n_jumps = rng.geometric(1 / n) + 5 if n_jumps is None else n_jumps  #54 (line in Coconut source)
-    n_walks = rng.negative_binomial(2, 1 / n) + 10 if n_walks is None else n_walks  #55 (line in Coconut source)
-    starts = rng.choice(n, size=n_walks)  #56 (line in Coconut source)
-    return _coconut_tail_call(graph.random_walks, walklen=n_jumps, start_nodes=starts, seed=rng)  #57 (line in Coconut source)
+    n_jumps = rng.geometric(1 / n) + 5 if n_jumps is None else n_jumps  #56 (line in Coconut source)
+    n_walks = rng.negative_binomial(2, 1 / n) + 10 if n_walks is None else n_walks  #57 (line in Coconut source)
+    starts = rng.choice(n, size=n_walks)  #58 (line in Coconut source)
+    return graph.random_walks(walklen=n_jumps, start_nodes=starts, seed=rng)  #59 (line in Coconut source)
 
 
 
@@ -201,4 +189,4 @@ def sim_graph_and_data(
         shape=(rw.shape[0], n)
     ).astype(bool)
     return G.mat, X
-"""  #85 (line in Coconut source)
+"""  #87 (line in Coconut source)

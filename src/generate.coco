@@ -18,15 +18,17 @@ type RandGraphType = (
     # | ReturnsGraph
 )
 
-addpattern def _graph_gen_dispatch('tree') = nx.random_labeled_tree
-addpattern def _graph_gen_dispatch('block') =
-    (n, *args, **kws)=>_graph_gen_dispatch('tree')(n+1, *args, **kws) |> nx.line_graph
+def _scalefree_sparse(n,m=None, seed=DEFAULT_RNG, **kws):
+    m ??= seed.choice([1,2])
+    return nx.barabasi_albert_graph(n,m,seed=seed, **kws)
 
-def _scalefree_sparse(n,m=None, rng=DEFAULT_RNG, **kws):
-    m ??= rng.choice([1,2])
-    return nx.barabasi_albert_graph(n,m,seed=rng, **kws)
+case def _graph_gen_dispatch[T:RandGraphType]:
+    type(kind:T, *args, **kws)-> nx.Graph
+    case('tree') = nx.random_labeled_tree
+    case('block') =
+        (n, *args, **kws)=>_graph_gen_dispatch('tree')(n+1, *args, **kws) |> nx.line_graph
+    case('scalefree') = _scalefree_sparse
 
-addpattern def _graph_gen_dispatch('scalefree') = _scalefree_sparse
 # addpattern def _graph_gen_dispatch(f `is_bearable` ReturnsGraph) = f
 
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x4345d52
+# __coconut_hash__ = 0xe8d27d78
 
 # Compiled with Coconut version 3.1.1
 
@@ -34,7 +34,7 @@ if _coconut_cached__coconut__ is None or getattr(_coconut_cached__coconut__, "_c
                         _coconut_v_type.__module__ = _coconut_full_module_name
         _coconut_sys.modules[_coconut_full_module_name] = _coconut__coconut__
 from __coconut__ import *
-from __coconut__ import _coconut_tail_call, _coconut_tco, _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _namedtuple_of, _coconut, _coconut_Expected, _coconut_MatchError, _coconut_SupportsAdd, _coconut_SupportsMinus, _coconut_SupportsMul, _coconut_SupportsPow, _coconut_SupportsTruediv, _coconut_SupportsFloordiv, _coconut_SupportsMod, _coconut_SupportsAnd, _coconut_SupportsXor, _coconut_SupportsOr, _coconut_SupportsLshift, _coconut_SupportsRshift, _coconut_SupportsMatmul, _coconut_SupportsInv, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_complex_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_raise, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op, _coconut_arr_concat_op, _coconut_mk_anon_namedtuple, _coconut_matmul, _coconut_py_str, _coconut_flatten, _coconut_multiset, _coconut_back_none_pipe, _coconut_back_none_star_pipe, _coconut_back_none_dubstar_pipe, _coconut_forward_none_compose, _coconut_back_none_compose, _coconut_forward_none_star_compose, _coconut_back_none_star_compose, _coconut_forward_none_dubstar_compose, _coconut_back_none_dubstar_compose, _coconut_call_or_coefficient, _coconut_in, _coconut_not_in, _coconut_attritemgetter, _coconut_if_op, _coconut_CoconutWarning
+from __coconut__ import _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _namedtuple_of, _coconut, _coconut_Expected, _coconut_MatchError, _coconut_SupportsAdd, _coconut_SupportsMinus, _coconut_SupportsMul, _coconut_SupportsPow, _coconut_SupportsTruediv, _coconut_SupportsFloordiv, _coconut_SupportsMod, _coconut_SupportsAnd, _coconut_SupportsXor, _coconut_SupportsOr, _coconut_SupportsLshift, _coconut_SupportsRshift, _coconut_SupportsMatmul, _coconut_SupportsInv, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_complex_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_raise, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op, _coconut_arr_concat_op, _coconut_mk_anon_namedtuple, _coconut_matmul, _coconut_py_str, _coconut_flatten, _coconut_multiset, _coconut_back_none_pipe, _coconut_back_none_star_pipe, _coconut_back_none_dubstar_pipe, _coconut_forward_none_compose, _coconut_back_none_compose, _coconut_forward_none_star_compose, _coconut_back_none_star_compose, _coconut_forward_none_dubstar_compose, _coconut_back_none_dubstar_compose, _coconut_call_or_coefficient, _coconut_in, _coconut_not_in, _coconut_attritemgetter, _coconut_if_op, _coconut_CoconutWarning
 if _coconut_pop_path:
     _coconut_sys.path.pop(0)
 try:
@@ -105,35 +105,30 @@ def minmax_tf(x  # type: PredProb  #23 (line in Coconut source)
 
 #TODO use density (.getnnz()) for sparse via dispatching
 
-@_coconut_tco  #32 (line in Coconut source)
 def _bool_contract(A,  # type: PredThres  #32 (line in Coconut source)
     B  # type: PredThres  #32 (line in Coconut source)
     ):  #32 (line in Coconut source)
-    return _coconut_tail_call((A * B).sum, axis=-1)  #32 (line in Coconut source)
+    return (A * B).sum(axis=-1)  #32 (line in Coconut source)
 
-@_coconut_tco  #33 (line in Coconut source)
 def _TP(actual,  # type: PredThres  #33 (line in Coconut source)
     pred  # type: PredThres  #33 (line in Coconut source)
     ):  #33 (line in Coconut source)
-    return _coconut_tail_call(_bool_contract, pred, actual)  #33 (line in Coconut source)
+    return _bool_contract(pred, actual)  #33 (line in Coconut source)
 
-@_coconut_tco  #34 (line in Coconut source)
 def _FP(actual,  # type: PredThres  #34 (line in Coconut source)
     pred  # type: PredThres  #34 (line in Coconut source)
     ):  #34 (line in Coconut source)
-    return _coconut_tail_call(_bool_contract, pred, ~actual)  #34 (line in Coconut source)
+    return _bool_contract(pred, ~actual)  #34 (line in Coconut source)
 
-@_coconut_tco  #35 (line in Coconut source)
 def _FN(actual,  # type: PredThres  #35 (line in Coconut source)
     pred  # type: PredThres  #35 (line in Coconut source)
     ):  #35 (line in Coconut source)
-    return _coconut_tail_call(_bool_contract, ~pred, actual)  #35 (line in Coconut source)
+    return _bool_contract(~pred, actual)  #35 (line in Coconut source)
 
-@_coconut_tco  #36 (line in Coconut source)
 def _TN(actual,  # type: PredThres  #36 (line in Coconut source)
     pred  # type: PredThres  #36 (line in Coconut source)
     ):  #36 (line in Coconut source)
-    return _coconut_tail_call(_bool_contract, ~pred, ~actual)  #36 (line in Coconut source)
+    return _bool_contract(~pred, ~actual)  #36 (line in Coconut source)
 
 
 @dataclass  #38 (line in Coconut source)
@@ -229,7 +224,6 @@ class Contingent(_coconut.object):  #39 (line in Coconut source)
     _coconut_typevar_T_0 = _coconut.typing.TypeVar("_coconut_typevar_T_0")  #82 (line in Coconut source)
 
     @classmethod  #82 (line in Coconut source)
-    @_coconut_tco  #83 (line in Coconut source)
     def from_scalar(cls,  # type: Type[_coconut_typevar_T_0]  #83 (line in Coconut source)
         y_true, x  # type: _coconut.typing.Optional[PredProb]  #83 (line in Coconut source)
         ):  #83 (line in Coconut source)
@@ -241,45 +235,39 @@ class Contingent(_coconut.object):  #39 (line in Coconut source)
         p, x_p = minmax_tf(x)  #88 (line in Coconut source)
         y_preds = np.less_equal.outer(p, x_p)  #89 (line in Coconut source)
 
-        return _coconut_tail_call(cls, y_true, y_preds, weights=p)  #91 (line in Coconut source)
+        return cls(y_true, y_preds, weights=p)  #91 (line in Coconut source)
 
 
 
 
     @property  #95 (line in Coconut source)
-    @_coconut_tco  #96 (line in Coconut source)
     def f_beta(self, beta):  #96 (line in Coconut source)
-        return _coconut_tail_call(f_beta, beta, self)  #96 (line in Coconut source)
+        return f_beta(beta, self)  #96 (line in Coconut source)
 
 
     @property  #98 (line in Coconut source)
-    @_coconut_tco  #99 (line in Coconut source)
     def F(self):  #99 (line in Coconut source)
-        return _coconut_tail_call(F1, self)  #99 (line in Coconut source)
+        return F1(self)  #99 (line in Coconut source)
 
 
     @property  #101 (line in Coconut source)
-    @_coconut_tco  #102 (line in Coconut source)
     def recall(self):  #102 (line in Coconut source)
-        return _coconut_tail_call(recall, self)  #102 (line in Coconut source)
+        return recall(self)  #102 (line in Coconut source)
 
 
     @property  #104 (line in Coconut source)
-    @_coconut_tco  #105 (line in Coconut source)
     def precision(self):  #105 (line in Coconut source)
-        return _coconut_tail_call(precision, self)  #105 (line in Coconut source)
+        return precision(self)  #105 (line in Coconut source)
 
 
     @property  #107 (line in Coconut source)
-    @_coconut_tco  #108 (line in Coconut source)
     def mcc(self):  #108 (line in Coconut source)
-        return _coconut_tail_call(matthews_corrcoef, self)  #108 (line in Coconut source)
+        return matthews_corrcoef(self)  #108 (line in Coconut source)
 
 
     @property  #110 (line in Coconut source)
-    @_coconut_tco  #111 (line in Coconut source)
     def G(self):  #111 (line in Coconut source)
-        return _coconut_tail_call(fowlkes_mallows, self)  #111 (line in Coconut source)
+        return fowlkes_mallows(self)  #111 (line in Coconut source)
 
 # def PPV(Yt:PredThres,Pt:PredThres) = TP/PP
 # def NPV(Yt:PredThres,Pt:PredThres) = TN/PN
@@ -288,21 +276,18 @@ class Contingent(_coconut.object):  #39 (line in Coconut source)
 
 
 _coconut_call_set_names(Contingent)  #118 (line in Coconut source)
-@_coconut_tco  #118 (line in Coconut source)
 def recall(Y  # type: Contingent  #118 (line in Coconut source)
     ):  #118 (line in Coconut source)
 # type: (...) -> ProbThres
-    return _coconut_tail_call(Y.TPR.filled, 1.)  #118 (line in Coconut source)
+    return Y.TPR.filled(1.)  #118 (line in Coconut source)
 
 
-@_coconut_tco  #120 (line in Coconut source)
 def precision(Y  # type: Contingent  #120 (line in Coconut source)
     ):  #120 (line in Coconut source)
 # type: (...) -> ProbThres
-    return _coconut_tail_call(Y.PPV.filled, 1.)  #120 (line in Coconut source)
+    return Y.PPV.filled(1.)  #120 (line in Coconut source)
 
 
-@_coconut_tco  #122 (line in Coconut source)
 def f_beta(beta,  # type: float  #122 (line in Coconut source)
     Y  # type: Contingent  #122 (line in Coconut source)
     ):  #122 (line in Coconut source)
@@ -310,14 +295,13 @@ def f_beta(beta,  # type: float  #122 (line in Coconut source)
     top = (1 + beta**2) * Y.PPV * Y.TPR  #123 (line in Coconut source)
     bottom = beta**2 * Y.PPV + Y.TPR  #124 (line in Coconut source)
 
-    return _coconut_tail_call(np.ma.divide(top, bottom).filled, 0.)  #126 (line in Coconut source)
+    return np.ma.divide(top, bottom).filled(0.)  #126 (line in Coconut source)
 
 
-@_coconut_tco  #128 (line in Coconut source)
 def F1(Y  # type: Contingent  #128 (line in Coconut source)
     ):  #128 (line in Coconut source)
 # type: (...) -> ProbThres
-    return _coconut_tail_call(f_beta, 1., Y)  #128 (line in Coconut source)
+    return f_beta(1., Y)  #128 (line in Coconut source)
 
 
 def matthews_corrcoef(Y  # type: Contingent  #130 (line in Coconut source)
@@ -329,11 +313,10 @@ def matthews_corrcoef(Y  # type: Contingent  #130 (line in Coconut source)
 
     return (_coconut_where_l_0 - _coconut_where_r_0).filled(0)  #137 (line in Coconut source)
 
-@_coconut_tco  #137 (line in Coconut source)
 def fowlkes_mallows(Y  # type: Contingent  #137 (line in Coconut source)
     ):  #137 (line in Coconut source)
 # type: (...) -> ProbThres
-    return _coconut_tail_call(np.sqrt, recall(Y) * precision(Y))  #138 (line in Coconut source)
+    return np.sqrt(recall(Y) * precision(Y))  #138 (line in Coconut source)
 
 
 # def precision(y_true, y_pred):

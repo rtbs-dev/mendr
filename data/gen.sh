@@ -2,8 +2,8 @@
 
 ~/.cargo/bin/rust-parallel -p -s \
     -r '(?P<kind>.*) (?P<size>.*) (?P<seed>.*)' \
-    "gmd-nist random-graph-walks {kind} {size} --seed {seed}
+    "mendr-sim random-graph-walks {kind} {size} --seed {seed}
               > data/{kind}/N{size}S{seed}.json" \
-    ::: tree block \
+    ::: tree block scalefree\
     ::: 010 030 100 \
     ::: {01..10}

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x2d602d51
+# __coconut_hash__ = 0x5ee1ff15
 
 # Compiled with Coconut version 3.1.1
 
@@ -38,7 +38,7 @@ if _coconut_cached__coconut__ is None or getattr(_coconut_cached__coconut__, "_c
                         _coconut_v_type.__module__ = _coconut_full_module_name
         _coconut_sys.modules[_coconut_full_module_name] = _coconut__coconut__
 from __coconut__ import *
-from __coconut__ import _coconut_tail_call, _coconut_tco, _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _namedtuple_of, _coconut, _coconut_Expected, _coconut_MatchError, _coconut_SupportsAdd, _coconut_SupportsMinus, _coconut_SupportsMul, _coconut_SupportsPow, _coconut_SupportsTruediv, _coconut_SupportsFloordiv, _coconut_SupportsMod, _coconut_SupportsAnd, _coconut_SupportsXor, _coconut_SupportsOr, _coconut_SupportsLshift, _coconut_SupportsRshift, _coconut_SupportsMatmul, _coconut_SupportsInv, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_complex_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_raise, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op, _coconut_arr_concat_op, _coconut_mk_anon_namedtuple, _coconut_matmul, _coconut_py_str, _coconut_flatten, _coconut_multiset, _coconut_back_none_pipe, _coconut_back_none_star_pipe, _coconut_back_none_dubstar_pipe, _coconut_forward_none_compose, _coconut_back_none_compose, _coconut_forward_none_star_compose, _coconut_back_none_star_compose, _coconut_forward_none_dubstar_compose, _coconut_back_none_dubstar_compose, _coconut_call_or_coefficient, _coconut_in, _coconut_not_in, _coconut_attritemgetter, _coconut_if_op, _coconut_CoconutWarning
+from __coconut__ import _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _namedtuple_of, _coconut, _coconut_Expected, _coconut_MatchError, _coconut_SupportsAdd, _coconut_SupportsMinus, _coconut_SupportsMul, _coconut_SupportsPow, _coconut_SupportsTruediv, _coconut_SupportsFloordiv, _coconut_SupportsMod, _coconut_SupportsAnd, _coconut_SupportsXor, _coconut_SupportsOr, _coconut_SupportsLshift, _coconut_SupportsRshift, _coconut_SupportsMatmul, _coconut_SupportsInv, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_complex_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_raise, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op, _coconut_arr_concat_op, _coconut_mk_anon_namedtuple, _coconut_matmul, _coconut_py_str, _coconut_flatten, _coconut_multiset, _coconut_back_none_pipe, _coconut_back_none_star_pipe, _coconut_back_none_dubstar_pipe, _coconut_forward_none_compose, _coconut_back_none_compose, _coconut_forward_none_star_compose, _coconut_back_none_star_compose, _coconut_forward_none_dubstar_compose, _coconut_back_none_dubstar_compose, _coconut_call_or_coefficient, _coconut_in, _coconut_not_in, _coconut_attritemgetter, _coconut_if_op, _coconut_CoconutWarning
 if _coconut_pop_path:
     _coconut_sys.path.pop(0)
 try:
@@ -162,26 +162,23 @@ class SerialSparse(_coconut.object):  #49 (line in Coconut source)
     _coconut_typevar_T_0 = _coconut.typing.TypeVar("_coconut_typevar_T_0")  #55 (line in Coconut source)
 
     @classmethod  #55 (line in Coconut source)
-    @_coconut_tco  #56 (line in Coconut source)
     def from_array(cls,  # type: Type[_coconut_typevar_T_0]  #56 (line in Coconut source)
         a):  #56 (line in Coconut source)
 # type: (...) -> _coconut_typevar_T_0
-        return _coconut_tail_call(_from_sparse, a)  #57 (line in Coconut source)
+        return _from_sparse(a)  #57 (line in Coconut source)
 
 
 
     _coconut_typevar_T_1 = _coconut.typing.TypeVar("_coconut_typevar_T_1")  #60 (line in Coconut source)
 
-    @_coconut_tco  #60 (line in Coconut source)
     def to_array(self):  #60 (line in Coconut source)
 # type: (...) -> _coconut_typevar_T_1
-        return _coconut_tail_call(_to_sparse, self.shape, self.array)  #61 (line in Coconut source)
+        return _to_sparse(self.shape, self.array)  #61 (line in Coconut source)
 
 
 # @addpattern
 
 _coconut_call_set_names(SerialSparse)  #65 (line in Coconut source)
-@_coconut_tco  #65 (line in Coconut source)
 @_coconut_mark_as_match  #65 (line in Coconut source)
 def _from_sparse(_coconut_match_first_arg=_coconut_sentinel, *_coconut_match_args, **_coconut_match_kwargs):  #65 (line in Coconut source)
     _coconut_match_check_0 = False  #65 (line in Coconut source)
@@ -208,7 +205,7 @@ def _from_sparse(_coconut_match_first_arg=_coconut_sentinel, *_coconut_match_arg
 # else:
 #     values = a.data
 
-    return _coconut_tail_call(SerialSparse, a.shape, COO(idx[0], idx[1], values))  #73 (line in Coconut source)
+    return SerialSparse(a.shape, COO(idx[0], idx[1], values))  #73 (line in Coconut source)
 
 
 try:  #75 (line in Coconut source)
@@ -217,7 +214,6 @@ except _coconut.NameError:  #75 (line in Coconut source)
     _coconut.warnings.warn("Deprecated use of 'addpattern def _from_sparse' with no pre-existing '_from_sparse' function (use 'match def _from_sparse' for the first definition or switch to 'case def' syntax)", _coconut_CoconutWarning)  #75 (line in Coconut source)
     _coconut_addpattern_0 = lambda f: f  #75 (line in Coconut source)
 @_coconut_addpattern_0  #75 (line in Coconut source)
-@_coconut_tco  #75 (line in Coconut source)
 @_coconut_mark_as_match  #75 (line in Coconut source)
 def _from_sparse(_coconut_match_first_arg=_coconut_sentinel, *_coconut_match_args, **_coconut_match_kwargs):  #75 (line in Coconut source)
     _coconut_match_check_1 = False  #75 (line in Coconut source)
@@ -237,7 +233,7 @@ def _from_sparse(_coconut_match_first_arg=_coconut_sentinel, *_coconut_match_arg
     if not _coconut_match_check_1:  #75 (line in Coconut source)
         raise _coconut_FunctionMatchError('addpattern def _from_sparse(s `is_bearable` spmatrix) = s |> _from_sparse .. sparse.COO.from_scipy_sparse', _coconut_match_args)  #75 (line in Coconut source)
 
-    return _coconut_tail_call((_coconut_forward_compose(sparse.COO.from_scipy_sparse, _from_sparse)), s)  #75 (line in Coconut source)
+    return (_coconut_forward_compose(sparse.COO.from_scipy_sparse, _from_sparse))(s)  #75 (line in Coconut source)
 
 try:  #76 (line in Coconut source)
     _coconut_addpattern_1 = _coconut_addpattern(_from_sparse)  # type: ignore  #76 (line in Coconut source)
@@ -245,7 +241,6 @@ except _coconut.NameError:  #76 (line in Coconut source)
     _coconut.warnings.warn("Deprecated use of 'addpattern def _from_sparse' with no pre-existing '_from_sparse' function (use 'match def _from_sparse' for the first definition or switch to 'case def' syntax)", _coconut_CoconutWarning)  #76 (line in Coconut source)
     _coconut_addpattern_1 = lambda f: f  #76 (line in Coconut source)
 @_coconut_addpattern_1  #76 (line in Coconut source)
-@_coconut_tco  #76 (line in Coconut source)
 @_coconut_mark_as_match  #76 (line in Coconut source)
 def _from_sparse(_coconut_match_first_arg=_coconut_sentinel, *_coconut_match_args, **_coconut_match_kwargs):  #76 (line in Coconut source)
     _coconut_match_check_2 = False  #76 (line in Coconut source)
@@ -265,7 +260,7 @@ def _from_sparse(_coconut_match_first_arg=_coconut_sentinel, *_coconut_match_arg
     if not _coconut_match_check_2:  #76 (line in Coconut source)
         raise _coconut_FunctionMatchError('addpattern def _from_sparse(s `is_bearable` sparray) = s |> _from_sparse .. coo_matrix', _coconut_match_args)  #76 (line in Coconut source)
 
-    return _coconut_tail_call((_coconut_forward_compose(coo_matrix, _from_sparse)), s)  #76 (line in Coconut source)
+    return (_coconut_forward_compose(coo_matrix, _from_sparse))(s)  #76 (line in Coconut source)
 
 try:  #77 (line in Coconut source)
     _coconut_addpattern_2 = _coconut_addpattern(_from_sparse)  # type: ignore  #77 (line in Coconut source)
@@ -273,7 +268,6 @@ except _coconut.NameError:  #77 (line in Coconut source)
     _coconut.warnings.warn("Deprecated use of 'addpattern def _from_sparse' with no pre-existing '_from_sparse' function (use 'match def _from_sparse' for the first definition or switch to 'case def' syntax)", _coconut_CoconutWarning)  #77 (line in Coconut source)
     _coconut_addpattern_2 = lambda f: f  #77 (line in Coconut source)
 @_coconut_addpattern_2  #77 (line in Coconut source)
-@_coconut_tco  #77 (line in Coconut source)
 @_coconut_mark_as_match  #77 (line in Coconut source)
 def _from_sparse(_coconut_match_first_arg=_coconut_sentinel, *_coconut_match_args, **_coconut_match_kwargs):  #77 (line in Coconut source)
     _coconut_match_check_3 = False  #77 (line in Coconut source)
@@ -293,7 +287,7 @@ def _from_sparse(_coconut_match_first_arg=_coconut_sentinel, *_coconut_match_arg
     if not _coconut_match_check_3:  #77 (line in Coconut source)
         raise _coconut_FunctionMatchError('addpattern def _from_sparse(g `is_bearable` nx.Graph) = g |> _from_sparse .. nx.to_scipy_sparse_array', _coconut_match_args)  #77 (line in Coconut source)
 
-    return _coconut_tail_call((_coconut_forward_compose(nx.to_scipy_sparse_array, _from_sparse)), g)  #77 (line in Coconut source)
+    return (_coconut_forward_compose(nx.to_scipy_sparse_array, _from_sparse))(g)  #77 (line in Coconut source)
 
 try:  #78 (line in Coconut source)
     _coconut_addpattern_3 = _coconut_addpattern(_from_sparse)  # type: ignore  #78 (line in Coconut source)
@@ -301,7 +295,6 @@ except _coconut.NameError:  #78 (line in Coconut source)
     _coconut.warnings.warn("Deprecated use of 'addpattern def _from_sparse' with no pre-existing '_from_sparse' function (use 'match def _from_sparse' for the first definition or switch to 'case def' syntax)", _coconut_CoconutWarning)  #78 (line in Coconut source)
     _coconut_addpattern_3 = lambda f: f  #78 (line in Coconut source)
 @_coconut_addpattern_3  #78 (line in Coconut source)
-@_coconut_tco  #78 (line in Coconut source)
 @_coconut_mark_as_match  #78 (line in Coconut source)
 def _from_sparse(_coconut_match_first_arg=_coconut_sentinel, *_coconut_match_args, **_coconut_match_kwargs):  #78 (line in Coconut source)
     _coconut_match_check_4 = False  #78 (line in Coconut source)
@@ -321,11 +314,10 @@ def _from_sparse(_coconut_match_first_arg=_coconut_sentinel, *_coconut_match_arg
     if not _coconut_match_check_4:  #78 (line in Coconut source)
         raise _coconut_FunctionMatchError('addpattern def _from_sparse(g `is_bearable` cg.csrgraph) = _from_sparse(g.mat)', _coconut_match_args)  #78 (line in Coconut source)
 
-    return _coconut_tail_call(_from_sparse, g.mat)  #78 (line in Coconut source)
+    return _from_sparse(g.mat)  #78 (line in Coconut source)
 
 
 
-@_coconut_tco  #81 (line in Coconut source)
 @_coconut_mark_as_match  #81 (line in Coconut source)
 def _to_sparse(_coconut_match_first_arg=_coconut_sentinel, *_coconut_match_args, **_coconut_match_kwargs):  #81 (line in Coconut source)
     _coconut_match_check_5 = False  #81 (line in Coconut source)
@@ -406,7 +398,7 @@ def _to_sparse(_coconut_match_first_arg=_coconut_sentinel, *_coconut_match_args,
         raise _coconut_FunctionMatchError('match def _to_sparse(shape, COO(row,col,vals)):', _coconut_match_args)  #81 (line in Coconut source)
 
     coords = np.array([row, col])  #82 (line in Coconut source)
-    return _coconut_tail_call(sparse.COO, coords, data=vals, shape=shape)  #83 (line in Coconut source)
+    return sparse.COO(coords, data=vals, shape=shape)  #83 (line in Coconut source)
 
 
 
