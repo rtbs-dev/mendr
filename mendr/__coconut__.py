@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # type: ignore
 
-# Compiled with Coconut version 3.1.0
+# Compiled with Coconut version 3.1.1
 
 """Built-in Coconut utilities."""
 
@@ -11,7 +11,7 @@
 from __future__ import print_function, absolute_import, unicode_literals, division
 import sys as _coconut_sys
 import os as _coconut_os
-_coconut_header_info = ('3.1.0', '', False)
+_coconut_header_info = ('3.1.1', '', False)
 try:
     __file__ = _coconut_os.path.abspath(__file__) if __file__ else __file__
 except NameError:
@@ -30,8 +30,8 @@ else:
 _coconut_cached__coconut__ = _coconut_sys.modules.get(str('_coconut_cached__coconut__'), _coconut_sys.modules.get(str('__coconut__')))
 if _coconut_sys.version_info < (3,):
     from __builtin__ import chr, dict, hex, input, int, map, object, oct, open, print, range, str, super, zip, filter, reversed, enumerate, raw_input, xrange, repr, long
-    py_bytes, py_chr, py_dict, py_hex, py_input, py_int, py_map, py_object, py_oct, py_open, py_print, py_range, py_str, py_super, py_zip, py_filter, py_reversed, py_enumerate, py_raw_input, py_xrange, py_repr = bytes, chr, dict, hex, input, int, map, object, oct, open, print, range, str, super, zip, filter, reversed, enumerate, raw_input, xrange, repr
-    _coconut_py_raw_input, _coconut_py_xrange, _coconut_py_int, _coconut_py_long, _coconut_py_print, _coconut_py_str, _coconut_py_super, _coconut_py_unicode, _coconut_py_repr, _coconut_py_dict, _coconut_py_bytes = raw_input, xrange, int, long, print, str, super, unicode, repr, dict, bytes
+    py_bytes, py_chr, py_dict, py_hex, py_input, py_int, py_map, py_object, py_oct, py_open, py_print, py_range, py_str, py_super, py_zip, py_filter, py_reversed, py_enumerate, py_raw_input, py_xrange, py_repr, py_min, py_max = bytes, chr, dict, hex, input, int, map, object, oct, open, print, range, str, super, zip, filter, reversed, enumerate, raw_input, xrange, repr, min, max
+    _coconut_py_raw_input, _coconut_py_xrange, _coconut_py_int, _coconut_py_long, _coconut_py_print, _coconut_py_str, _coconut_py_super, _coconut_py_unicode, _coconut_py_repr, _coconut_py_dict, _coconut_py_bytes, _coconut_py_min, _coconut_py_max = raw_input, xrange, int, long, print, str, super, unicode, repr, dict, bytes, min, max
     from functools import wraps as _coconut_wraps
     from collections import Sequence as _coconut_Sequence
     from future_builtins import *
@@ -237,6 +237,35 @@ if _coconut_sys.version_info < (3,):
         def __call__(self, obj):
             return _coconut.getattr(obj, self.name)(*self.args, **self.kwargs)
     _coconut_operator.methodcaller = _coconut_methodcaller
+    if _coconut_sys.version_info < (2, 7):
+        import functools as _coconut_functools, copy_reg as _coconut_copy_reg
+        def _coconut_new_partial(func, args, keywords):
+            return _coconut_functools.partial(func, *(args if args is not None else ()), **(keywords if keywords is not None else {}))
+        _coconut_copy_reg.constructor(_coconut_new_partial)
+        def _coconut_reduce_partial(self):
+            return (_coconut_new_partial, (self.func, self.args, self.keywords))
+        _coconut_copy_reg.pickle(_coconut_functools.partial, _coconut_reduce_partial)
+    def min(*args, **kwargs):
+        if len(args) == 1 and "default" in kwargs:
+            obj = tuple(args[0])
+            default = kwargs.pop("default")
+            if len(obj):
+                return _coconut_py_min(obj, **kwargs)
+            else:
+                return default
+        else:
+            return _coconut_py_min(*args, **kwargs)
+    def max(*args, **kwargs):
+        if len(args) == 1 and "default" in kwargs:
+            obj = tuple(args[0])
+            default = kwargs.pop("default")
+            if len(obj):
+                return _coconut_py_max(obj, **kwargs)
+            else:
+                return default
+        else:
+            return _coconut_py_max(*args, **kwargs)
+    from collections import OrderedDict as _coconut_OrderedDict
     def _coconut_default_breakpointhook(*args, **kwargs):
         hookname = _coconut.os.getenv("PYTHONBREAKPOINT")
         if hookname != "0":
@@ -257,15 +286,6 @@ if _coconut_sys.version_info < (3,):
         _coconut_sys.__breakpointhook__ = _coconut_default_breakpointhook
     def breakpoint(*args, **kwargs):
         return _coconut.getattr(_coconut_sys, "breakpointhook", _coconut_default_breakpointhook)(*args, **kwargs)
-    if _coconut_sys.version_info < (2, 7):
-        import functools as _coconut_functools, copy_reg as _coconut_copy_reg
-        def _coconut_new_partial(func, args, keywords):
-            return _coconut_functools.partial(func, *(args if args is not None else ()), **(keywords if keywords is not None else {}))
-        _coconut_copy_reg.constructor(_coconut_new_partial)
-        def _coconut_reduce_partial(self):
-            return (_coconut_new_partial, (self.func, self.args, self.keywords))
-        _coconut_copy_reg.pickle(_coconut_functools.partial, _coconut_reduce_partial)
-    from collections import OrderedDict as _coconut_OrderedDict
     class _coconut_dict_base(_coconut_OrderedDict):
         __slots__ = ()
         __doc__ = getattr(_coconut_OrderedDict, "__doc__", "<see help(py_dict)>")
@@ -294,11 +314,35 @@ if _coconut_sys.version_info < (3,):
     dict.items = _coconut_OrderedDict.viewitems
 else:
     from builtins import chr, dict, hex, input, int, map, object, oct, open, print, range, str, super, zip, filter, reversed, enumerate, repr
-    py_bytes, py_chr, py_dict, py_hex, py_input, py_int, py_map, py_object, py_oct, py_open, py_print, py_range, py_str, py_super, py_zip, py_filter, py_reversed, py_enumerate, py_repr = bytes, chr, dict, hex, input, int, map, object, oct, open, print, range, str, super, zip, filter, reversed, enumerate, repr
-    _coconut_py_str, _coconut_py_super, _coconut_py_dict = str, super, dict
+    py_bytes, py_chr, py_dict, py_hex, py_input, py_int, py_map, py_object, py_oct, py_open, py_print, py_range, py_str, py_super, py_zip, py_filter, py_reversed, py_enumerate, py_repr, py_min, py_max = bytes, chr, dict, hex, input, int, map, object, oct, open, print, range, str, super, zip, filter, reversed, enumerate, repr, min, max
+    _coconut_py_str, _coconut_py_super, _coconut_py_dict, _coconut_py_min, _coconut_py_max = str, super, dict, min, max
     from functools import wraps as _coconut_wraps
     exec("_coconut_exec = exec")
+    if _coconut_sys.version_info >= (3, 7):
+        py_breakpoint = breakpoint
+    if _coconut_sys.version_info < (3, 4):
+        def min(*args, **kwargs):
+            if len(args) == 1 and "default" in kwargs:
+                obj = tuple(args[0])
+                default = kwargs.pop("default")
+                if len(obj):
+                    return _coconut_py_min(obj, **kwargs)
+                else:
+                    return default
+            else:
+                return _coconut_py_min(*args, **kwargs)
+        def max(*args, **kwargs):
+            if len(args) == 1 and "default" in kwargs:
+                obj = tuple(args[0])
+                default = kwargs.pop("default")
+                if len(obj):
+                    return _coconut_py_max(obj, **kwargs)
+                else:
+                    return default
+            else:
+                return _coconut_py_max(*args, **kwargs)
     if _coconut_sys.version_info < (3, 7):
+        from collections import OrderedDict as _coconut_OrderedDict
         def _coconut_default_breakpointhook(*args, **kwargs):
             hookname = _coconut.os.getenv("PYTHONBREAKPOINT")
             if hookname != "0":
@@ -319,10 +363,6 @@ else:
             _coconut_sys.__breakpointhook__ = _coconut_default_breakpointhook
         def breakpoint(*args, **kwargs):
             return _coconut.getattr(_coconut_sys, "breakpointhook", _coconut_default_breakpointhook)(*args, **kwargs)
-    else:
-        py_breakpoint = breakpoint
-    if _coconut_sys.version_info < (3, 7):
-        from collections import OrderedDict as _coconut_OrderedDict
         class _coconut_dict_base(_coconut_OrderedDict):
             __slots__ = ()
             __doc__ = getattr(_coconut_OrderedDict, "__doc__", "<see help(py_dict)>")
@@ -521,7 +561,7 @@ class _coconut(object):
         numpy = _coconut_missing_module(numpy_import_err)
     else:
         abc.Sequence.register(numpy.ndarray)
-    numpy_modules = ('numpy', 'torch', 'xarray', 'pandas', 'jaxlib')
+    numpy_modules = ('numpy', 'torch', 'jaxlib', 'pandas', 'xarray')
     xarray_modules = ('xarray',)
     pandas_modules = ('pandas',)
     jax_numpy_modules = ('jaxlib',)
@@ -529,7 +569,7 @@ class _coconut(object):
     reiterables = abc.Sequence, abc.Mapping, abc.Set
     fmappables = list, tuple, dict, set, frozenset, bytes, bytearray
     abc.Sequence.register(collections.deque)
-    Ellipsis, NotImplemented, NotImplementedError, Exception, AttributeError, ImportError, IndexError, KeyError, NameError, TypeError, ValueError, StopIteration, RuntimeError, all, any, bool, bytes, callable, chr, classmethod, complex, dict, enumerate, filter, float, frozenset, getattr, hasattr, hash, id, int, isinstance, issubclass, iter, len, list, locals, globals, map, min, max, next, object, ord, property, range, reversed, set, setattr, slice, str, sum, super, tuple, type, vars, zip, repr, print, bytearray = Ellipsis, NotImplemented, NotImplementedError, Exception, AttributeError, ImportError, IndexError, KeyError, NameError, TypeError, ValueError, StopIteration, RuntimeError, all, any, bool, bytes, callable, chr, classmethod, complex, dict, enumerate, filter, float, frozenset, getattr, hasattr, hash, id, int, isinstance, issubclass, iter, len, list, locals, globals, map, min, max, next, object, ord, property, range, reversed, set, setattr, slice, str, sum, staticmethod(super), tuple, type, vars, zip, staticmethod(repr), staticmethod(print), bytearray
+    Ellipsis, NotImplemented, NotImplementedError, Exception, AttributeError, ImportError, IndexError, KeyError, NameError, TypeError, ValueError, StopIteration, RuntimeError, all, any, bool, bytes, callable, chr, classmethod, complex, dict, enumerate, filter, float, frozenset, getattr, hasattr, hash, id, int, isinstance, issubclass, iter, len, list, locals, globals, map, min, max, next, object, ord, property, range, reversed, set, setattr, slice, str, sum, super, tuple, type, vars, zip, repr, print, bytearray = Ellipsis, NotImplemented, NotImplementedError, Exception, AttributeError, ImportError, IndexError, KeyError, NameError, TypeError, ValueError, StopIteration, RuntimeError, all, any, bool, bytes, callable, chr, classmethod, complex, dict, enumerate, filter, float, frozenset, getattr, hasattr, hash, id, int, isinstance, issubclass, iter, len, list, locals, globals, map, staticmethod(min), staticmethod(max), next, object, ord, property, range, reversed, set, setattr, slice, str, sum, staticmethod(super), tuple, type, vars, zip, staticmethod(repr), staticmethod(print), bytearray
 @_coconut.functools.wraps(_coconut.functools.partial)
 def _coconut_partial(_coconut_func, *args, **kwargs):
     partial_func = _coconut.functools.partial(_coconut_func, *args, **kwargs)
@@ -607,6 +647,10 @@ def _coconut_xarray_to_numpy(obj):
         return obj.to_dataframe().to_numpy()
     else:
         return obj.to_numpy()
+class CoconutWarning(Warning, object):
+    """Exception class used for all Coconut warnings."""
+    __slots__ = ()
+_coconut_CoconutWarning = CoconutWarning
 class MatchError(_coconut_baseclass, Exception):
     """Pattern-matching error. Has attributes .pattern, .value, and .message."""
     max_val_repr_len = 500
@@ -1296,10 +1340,7 @@ Additionally supports Cartesian products of numpy arrays."""
         if iterables:
             it_modules = [_coconut_get_base_module(it) for it in iterables]
             if _coconut.all(mod in _coconut.numpy_modules for mod in it_modules):
-                if _coconut.any(mod in _coconut.xarray_modules for mod in it_modules):
-                    iterables = tuple((_coconut_xarray_to_numpy(it) if mod in _coconut.xarray_modules else it) for it, mod in _coconut.zip(iterables, it_modules))
-                if _coconut.any(mod in _coconut.pandas_modules for mod in it_modules):
-                    iterables = tuple((it.to_numpy() if mod in _coconut.pandas_modules else it) for it, mod in _coconut.zip(iterables, it_modules))
+                iterables = tuple((it.to_numpy() if mod in _coconut.pandas_modules else _coconut_xarray_to_numpy(it) if mod in _coconut.xarray_modules else it) for it, mod in _coconut.zip(iterables, it_modules))
                 if _coconut.any(mod in _coconut.jax_numpy_modules for mod in it_modules):
                     from jax import numpy
                 else:
@@ -1372,7 +1413,7 @@ class map(_coconut_baseclass, _coconut.map):
     def __len__(self):
         if not _coconut.all(_coconut.isinstance(it, _coconut.abc.Sized) for it in self.iters):
             return _coconut.NotImplemented
-        return _coconut.min(_coconut.len(it) for it in self.iters)
+        return _coconut.min((_coconut.len(it) for it in self.iters), default=0)
     def __repr__(self):
         return "%s(%r, %s)" % (self.__class__.__name__, self.func, ", ".join((_coconut.repr(it) for it in self.iters)))
     def __reduce__(self):
@@ -1514,7 +1555,7 @@ class zip(_coconut_baseclass, _coconut.zip):
     def __len__(self):
         if not _coconut.all(_coconut.isinstance(it, _coconut.abc.Sized) for it in self.iters):
             return _coconut.NotImplemented
-        return _coconut.min(_coconut.len(it) for it in self.iters)
+        return _coconut.min((_coconut.len(it) for it in self.iters), default=0)
     def __repr__(self):
         return "zip(%s%s)" % (", ".join((_coconut.repr(it) for it in self.iters)), ", strict=True" if self.strict else "")
     def __reduce__(self):
@@ -1568,7 +1609,7 @@ class zip_longest(zip):
     def __len__(self):
         if not _coconut.all(_coconut.isinstance(it, _coconut.abc.Sized) for it in self.iters):
             return _coconut.NotImplemented
-        return _coconut.max(_coconut.len(it) for it in self.iters)
+        return _coconut.max((_coconut.len(it) for it in self.iters), default=0)
     def __repr__(self):
         return "zip_longest(%s, fillvalue=%s)" % (", ".join((_coconut.repr(it) for it in self.iters)), _coconut.repr(self.fillvalue))
     def __reduce__(self):
@@ -1632,12 +1673,7 @@ class multi_enumerate(_coconut_has_iter):
     through inner iterables and produces a tuple index representing the index
     in each inner iterable. Supports indexing.
 
-    For numpy arrays, effectively equivalent to:
-        it = np.nditer(iterable, flags=["multi_index", "refs_ok"])
-        for x in it:
-            yield it.multi_index, x
-
-    Also supports len for numpy arrays.
+    For numpy arrays, uses np.nditer under the hood and supports len.
     """
     __slots__ = ()
     def __repr__(self):
@@ -1973,7 +2009,7 @@ def addpattern(base_func, *add_funcs, **kwargs):
     """
     allow_any_func = kwargs.pop("allow_any_func", False)
     if not allow_any_func and not _coconut.getattr(base_func, "_coconut_is_match", False):
-        _coconut.warnings.warn("Possible misuse of addpattern with non-pattern-matching function " + _coconut.repr(base_func) + " (pass allow_any_func=True to dismiss)", stacklevel=2)
+        _coconut.warnings.warn("Possible misuse of addpattern with non-pattern-matching function " + _coconut.repr(base_func) + " (pass allow_any_func=True to dismiss)", _coconut_CoconutWarning, 2)
     if kwargs:
         raise _coconut.TypeError("addpattern() got unexpected keyword arguments " + _coconut.repr(kwargs))
     if add_funcs:
@@ -2355,13 +2391,16 @@ def ident(x, **kwargs):
     if side_effect is not None:
         side_effect(x)
     return x
-def call(_coconut_f, *args, **kwargs):
-    """Function application operator function.
+if _coconut_sys.version_info < (3, 11):
+    def call(_coconut_f, *args, **kwargs):
+        """Function application operator function.
 
-    Equivalent to:
-        def call(f, /, *args, **kwargs) = f(*args, **kwargs).
-    """
-    return _coconut_f(*args, **kwargs)
+        Equivalent to:
+            def call(f, /, *args, **kwargs) = f(*args, **kwargs).
+        """
+        return _coconut_f(*args, **kwargs)
+else:
+    call = _coconut.operator.call
 def safe_call(_coconut_f, *args, **kwargs):
     """safe_call is a version of call that catches any Exceptions and
     returns an Expected containing either the result or the error.
@@ -2608,10 +2647,10 @@ def all_equal(iterable, to=_coconut_sentinel):
     """
     iterable_module = _coconut_get_base_module(iterable)
     if iterable_module in _coconut.numpy_modules:
-        if iterable_module in _coconut.xarray_modules:
-            iterable = _coconut_xarray_to_numpy(iterable)
-        elif iterable_module in _coconut.pandas_modules:
+        if iterable_module in _coconut.pandas_modules:
             iterable = iterable.to_numpy()
+        elif iterable_module in _coconut.xarray_modules:
+            iterable = _coconut_xarray_to_numpy(iterable)
         return not _coconut.len(iterable) or (iterable == (iterable[0] if to is _coconut_sentinel else to)).all()
     first_item = to
     for item in iterable:

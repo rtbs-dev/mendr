@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "MENDR"
-version = "0.1.0"
+version = "0.2.0"
 description = "Measurement Error in Network Diffusion Datasets for graph Reconstruction"
 authors = ["Rachael T. Sexton <rtbs@nist.gov>"]
 license = "NIST"
