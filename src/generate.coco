@@ -13,6 +13,7 @@ DEFAULT_RNG = np.random.default_rng()
 type RandGraphType = (
     Literal['tree']
     | Literal['block']
+    | Literal['scalefree']
     # | Literal['ERG']
     # | ReturnsGraph
 )
@@ -20,6 +21,12 @@ type RandGraphType = (
 addpattern def _graph_gen_dispatch('tree') = nx.random_labeled_tree
 addpattern def _graph_gen_dispatch('block') =
     (n, *args, **kws)=>_graph_gen_dispatch('tree')(n+1, *args, **kws) |> nx.line_graph
+
+def _scalefree_sparse(n,m=None, rng=DEFAULT_RNG, **kws):
+    m ??= rng.choice([1,2])
+    return nx.barabasi_albert_graph(n,m,seed=rng, **kws):
+
+addpattern def _graph_gen_dispatch('scalefree') = _scalefree_sparse
 # addpattern def _graph_gen_dispatch(f `is_bearable` ReturnsGraph) = f
 
 
