@@ -1,0 +1,6 @@
+outs:
+- md5: 8af769ef9dc66aca0129d824ee65805e.dir
+  size: 37669399
+  nfiles: 120
+  hash: md5
+  path: scalefree

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x5ee1ff15
+# __coconut_hash__ = 0xa521d178
 
-# Compiled with Coconut version 3.1.1
+# Compiled with Coconut version 3.1.2
 
 """
 Inspired by BinSparse specification
@@ -13,7 +13,7 @@ Inspired by BinSparse specification
 from __future__ import print_function, absolute_import, unicode_literals, division
 import sys as _coconut_sys
 import os as _coconut_os
-_coconut_header_info = ('3.1.1', '', False)
+_coconut_header_info = ('3.1.2', '', False)
 _coconut_cached__coconut__ = _coconut_sys.modules.get(str('__coconut__'))
 _coconut_file_dir = _coconut_os.path.dirname(_coconut_os.path.abspath(__file__))
 _coconut_pop_path = False

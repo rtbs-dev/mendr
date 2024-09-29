@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 from autoregistry import Registry
 
 from typing import Literal, Annotated, TypedDict
@@ -21,7 +20,6 @@ import numpy as np
 
 from scipy.integrate import trapezoid
 
-# from sklearn.metrics import precision_recall_curve
 from sklearn.covariance import GraphicalLassoCV, graphical_lasso
 from sklearn.utils._testing import ignore_warnings
 from sklearn.exceptions import ConvergenceWarning
@@ -53,6 +51,11 @@ def load_graph(graph_id: DatasetIDType) -> SerialRandWalks:
 
 
 _estimators = Registry(prefix="_alg_", hyphen=True, case_sensitive=True)
+
+
+@_estimators(aliases=["CoOc", "co-occur"])
+def _alg_cooccurrence_probability(X, **kws):
+    return _sq(asc.coocur_prob(X, **kws))
 
 
 @_estimators(aliases=["CS", "cosine"])
@@ -97,28 +100,18 @@ def _alg_mutual_information(X, **kws):
     return _sq(asc.mutual_information(X, **kws))
 
 
-@_estimators(aliases=["TS", "tree-shift", "DPD-TS"])
-def _alg_desire_path_treeshift(X, **kws):
-    return _sq(asc.SFD_edge_cond_prob(X, **kws))
+@_estimators(aliases=["TS", "tree-shift", "FP"])
+def _alg_forest_pursuit(X, **kws):
+    return _sq(asc.forest_pursuit_edge(X, **kws))
 
 
-@_estimators(aliases=["DPD-TSi", "TSi"])
-def _alg_desire_path_ts_interactions(X, **kws):
-    return _sq(asc.SFD_interaction_prob(X, **kws))
-
-
-"""
-baselines['MST_e'] = _sq(SFD_edge_cond_prob(X, pseudocts=psct))
-baselines['MST_i'] = _sq(SFD_interaction_prob(X, pseudocts=psct))
-"""
-
-# @_estimators(aliases=[])
+@_estimators(aliases=["FPi", "TSi"])
+def _alg_forest_pursuit_interactions(X, **kws):
+    return _sq(asc.forest_pursuit_interaction(X, **kws))
 
 
 EstimatorNameType = Annotated[str, Is[lambda s: s in list(_estimators)]]
 
-
-# ValidEstimators =
 
 _metrics = Registry(prefix="_met_", hyphen=True, case_sensitive=True)
 
