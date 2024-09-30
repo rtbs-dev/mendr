@@ -27,6 +27,14 @@ type SparseValues = Shaped[np.ndarray, "#nnz"]  # could be scalar
 @serde
 @dataclass
 class COO:
+    """
+    Data model for COO sparse arrays.
+
+    Args:
+        indices_0: npt.NDArray[int]
+        indices_1: npt.NDArray[int]
+        values: int: only supports binary sparse for now
+    """
     indices_0: npt.NDArray[int]
     indices_1: npt.NDArray[int]
     values: int #| np.number
@@ -34,6 +42,14 @@ class COO:
 @serde
 @dataclass
 class CSC:
+    """
+    Data model for CSC sparse arrays.
+
+    Args:
+        pointers_to_1: npt.NDArray[int]
+        indices_1: npt.NDArray[int]
+        values: int: only supports binary sparse for now
+    """
     pointers_to_1: npt.NDArray[int]
     indices_1: npt.NDArray[int]
     values: int #| np.number
@@ -47,6 +63,13 @@ type SparseArrayType = (
 @serde(tagging=AdjacentTagging("format", "data_types"))
 @dataclass
 class SerialSparse:
+    """
+    Sparse, serializable array, typed with shape information.
+
+    Args:
+        shape: tuple[int,int]
+        array: COO|CSC
+    """
     # version:str = "0.1"
     shape: tuple[int,int]
     array: SparseArrayType
@@ -54,31 +77,34 @@ class SerialSparse:
 
     @classmethod
     def from_array[T](cls:Type[T], a)->T:
-        return _from_sparse(a)
+        """parse supported array type into an instance of this class
+        """
+        return ser_from_sparse(a)
 
 
     def to_array[T](self)->T:
-        return _to_sparse(self.shape, self.array)
+        return ser_to_sparse(self.shape, self.array)
 
 
 # @addpattern
-match def _from_sparse(a `is_bearable` sparse.COO):
+match def ser_from_sparse(a `is_bearable` sparse.COO):
+    """parse a supported array or graph into a serializeable representation"""
     idx = a.coords
     values = 1  # ignore a.data for the purposes of this work... for now
     # if np.all(np.isclose(a.data, a.data[0])):
     #     values = a.data[0]
     # else:
     #     values = a.data
-
     return SerialSparse(a.shape, COO(idx[0], idx[1], values))
 
-addpattern def _from_sparse(s `is_bearable` spmatrix) = s |> _from_sparse .. sparse.COO.from_scipy_sparse
-addpattern def _from_sparse(s `is_bearable` sparray) = s |> _from_sparse .. coo_matrix
-addpattern def _from_sparse(g `is_bearable` nx.Graph) = g |> _from_sparse .. nx.to_scipy_sparse_array
-addpattern def _from_sparse(g `is_bearable` cg.csrgraph) = _from_sparse(g.mat)
+addpattern def ser_from_sparse(s `is_bearable` spmatrix) = s |> ser_from_sparse .. sparse.COO.from_scipy_sparse
+addpattern def ser_from_sparse(s `is_bearable` sparray) = s |> ser_from_sparse .. coo_matrix
+addpattern def ser_from_sparse(g `is_bearable` nx.Graph) = g |> ser_from_sparse .. nx.to_scipy_sparse_array
+addpattern def ser_from_sparse(g `is_bearable` cg.csrgraph) = ser_from_sparse(g.mat)
 
 
-match def _to_sparse(shape, COO(row,col,vals)):
+match def ser_to_sparse(shape, COO(row,col,vals)):
+    """convert to a tensor/sparse-array representation"""
     coords = np.array([row,col])
     return sparse.COO(coords, data=vals, shape=shape)
 
@@ -86,6 +112,19 @@ match def _to_sparse(shape, COO(row,col,vals)):
 @serde
 @dataclass
 class SerialRandWalks:
+    """MENDR 'problem' container,
+
+    Holds a sparse adjacency matrix (graph) and an array of random walks (node ID jumps)
+
+    The "activations" sparse array is the representation to be used in MENDR challenges,
+    with all ordering removed; visited nodes are instead marked with a "1".
+
+    Args:
+        graph: SerialSparse
+        jumps: npt.NDArray
+        activations: SerialSparse
+
+    """
     graph: SerialSparse
     jumps: npt.NDArray
     activations: SerialSparse
