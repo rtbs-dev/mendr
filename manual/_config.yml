@@ -39,10 +39,11 @@ sphinx:
   - 'sphinx.ext.autodoc'
   - 'sphinx.ext.napoleon'
   - 'sphinx.ext.viewcode'
-  - 'sphinx_autodoc_typehints'
+  # - 'sphinx_autodoc_typehints'
   config: 
     add_module_names: False
-    napoleon_use_param: True
+    # napoleon_use_param: True
+    autodoc_typehints: 'description'
     latex_toplevel_sectioning: 'section'
     html_theme_options: 
       home_page_in_toc: true

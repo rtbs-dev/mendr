@@ -20,6 +20,11 @@ MENDR tries to provide the latter: _algorithm validation_ for network reconstruc
 ## What's inside?
 
 ### Datasets
-Each MENDR "problem" consists of a randomly generated network, and 
+Each MENDR "problem" consists of a randomly generated network, and a unique set of random-walks for each. 
+The problems are given an ID based on their generation parameters. 
+For more information, see the [`mendr` CLI page](cli.md)
+
+### Data VCS 
+TO facilitate community a
 
 

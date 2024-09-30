@@ -19,6 +19,7 @@ beartype = "^0.17.2"
 pyserde = "^0.14.0"
 sparse = "^0.15.1"
 polars = "^0.20.21"
+affinis = {git = "https://github.com/rtbs-dev/affinis.git"}
 
 
 [tool.poetry.group.dev.dependencies]
@@ -33,7 +34,6 @@ dvc = "^3.49.0"
 
 [tool.poetry.group.report.dependencies]
 autoregistry = "^1.1.2"
-affinis = {path = "../affinis"}
 dvclive = {extras = ["markdown", "sklearn"], version = "^3.45.0"}
 seaborn = "^0.13.2"
 awkward-pandas = "^2023.8.0"
