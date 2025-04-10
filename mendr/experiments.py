@@ -170,7 +170,7 @@ def estimate_graph(
     # X = rw.to_array()
     # A = experiment.graph.to_arrayy()
     alg = _estimators[estimator]
-    return _sq(alg(X, *args, **kwds))
+    return alg(X, *args, **kwds)
 
 
 # def eval_estimator(y_pred, y_true)-> dict:  # -> MetricStuff typeddiexpectedct?
