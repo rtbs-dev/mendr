@@ -19,7 +19,7 @@ import mendr.metrics as m
 import numpy as np
 
 from scipy.integrate import trapezoid
-
+from scipy.sparse import csr_array
 from sklearn.covariance import GraphicalLassoCV, graphical_lasso
 from sklearn.utils._testing import ignore_warnings
 from sklearn.exceptions import ConvergenceWarning
@@ -41,7 +41,11 @@ _datasets = dict(
         map(Path, _dataset_paths),
     )
 )
-DatasetIDType = Annotated[str, Is[lambda id: id in _datasets]]
+
+
+
+# DatasetIDType = Annotated[str, Is[lambda id: id in _datasets]]
+DatasetIDType = Literal[tuple(_datasets)]
 
 
 @beartype
@@ -72,12 +76,12 @@ def _alg_resource_projection(X, **kws):
 @ignore_warnings(category=ConvergenceWarning)
 def _alg_graphical_lasso(X, **kws):
     try:
-        return -_sq(graphical_lasso(asc.coocur_prob(X, **kws), 0.05)[1])
-        # return -_sq(
-        #     GraphicalLassoCV()
-        #     .fit(X.toarray())  # TODO memory footprint :(
-        #     .get_precision()
-        # )
+        # return -_sq(graphical_lasso(asc.coocur_prob(X, **kws), 0.05)[1])
+        return -_sq(
+            GraphicalLassoCV(assume_centered=True)
+            .fit(X.toarray())  # TODO memory footprint :(
+            .get_precision()
+        )
     except FloatingPointError:
         return None
         # m = np.zeros(X.shape[1],X.shape[1])
@@ -110,8 +114,13 @@ def _alg_forest_pursuit_interactions(X, **kws):
     return _sq(asc.forest_pursuit_interaction(X, **kws))
 
 
-EstimatorNameType = Annotated[str, Is[lambda s: s in list(_estimators)]]
+@_estimators(aliases=["EFM","expected-forest"])
+def _alg_expected_forest_max(X, **kws):
+    return _sq(asc.expected_forest_maximization(X, **kws))
 
+
+# EstimatorNameType = Annotated[str, Is[lambda s: s in list(_estimators)]]
+EstimatorNameType = Literal[tuple(_estimators)]
 
 _metrics = Registry(prefix="_met_", hyphen=True, case_sensitive=True)
 
@@ -144,21 +153,24 @@ def _met_avg_precision_score(M, **kws):
     return np.sum(np.diff(M.recall[::-1], prepend=0) * M.precision[::-1])
 
 
-MetricNameType = Annotated[str, Is[lambda s: s in list(_metrics)]]
+# MetricNameType = Annotated[str, Is[lambda s: s in list(_metrics)]]
+MetricNameType = Literal[tuple(_metrics)]
 
 
 @beartype
 def estimate_graph(
-    rw: SerialSparse,
+    dataset: DatasetIDType,
     estimator: EstimatorNameType,
     *args,
-    pseudocts="min-connect",
     **kwds,
 ):
-    X = rw.to_array()
+
+    exp = load_graph(dataset)
+    X = csr_array(exp.activations.to_array().to_scipy_sparse())
+    # X = rw.to_array()
     # A = experiment.graph.to_arrayy()
     alg = _estimators[estimator]
-    return alg(X, *args, pseudocts=pseudocts, **kwds)
+    return _sq(alg(X, *args, **kwds))
 
 
 # def eval_estimator(y_pred, y_true)-> dict:  # -> MetricStuff typeddiexpectedct?
@@ -170,7 +182,7 @@ def run_experiment(graph_id: DatasetIDType, algs: list[EstimatorNameType]) -> No
     with Live(f"reports/{graph_id}", report="md", exp_name=graph_id) as live:
         # expected# prelim exp stuff
         exp = load_graph(graph_id)
-        ytrue = exp.graph.to_array()  # TODO FLATTEN ME!!
+        y_true = exp.graph.to_array()  # TODO FLATTEN ME!!
         for alg in algs:
             # per-alg-stuff
             pred = estimate_graph(exp.activations, alg)  # TODO handle args/kwargs
