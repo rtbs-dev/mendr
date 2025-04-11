@@ -1,5 +1,5 @@
 from autoregistry import Registry
-
+import time
 from typing import Literal, Annotated, TypedDict
 from dvc.api import DVCFileSystem
 import re
@@ -20,6 +20,7 @@ import numpy as np
 
 from scipy.integrate import trapezoid
 from scipy.sparse import csr_array
+from scipy.stats import iqr
 from sklearn.covariance import GraphicalLassoCV, graphical_lasso
 from sklearn.utils._testing import ignore_warnings
 from sklearn.exceptions import ConvergenceWarning
@@ -57,7 +58,7 @@ def load_graph(graph_id: DatasetIDType) -> SerialRandWalks:
 _estimators = Registry(prefix="_alg_", hyphen=True, case_sensitive=True)
 
 
-@_estimators(aliases=["CoOc", "co-occur"])
+@_estimators(aliases=["CoOc", 'cooccur-prob'])
 def _alg_cooccurrence_probability(X, **kws):
     return _sq(asc.coocur_prob(X, **kws))
 
@@ -157,21 +158,59 @@ def _met_avg_precision_score(M, **kws):
 MetricNameType = Literal[tuple(_metrics)]
 
 
+def sigfigs(n,sig):
+    # return '{:g}'.format(float('{:.{p}g}'.format(n, p=sig)))
+    return float('{:.{p}g}'.format(n, p=sig))
+    
+np_sigfig = np.frompyfunc(sigfigs, 2, 1)
+
 @beartype
-def estimate_graph(
+def report(
     dataset: DatasetIDType,
     estimator: EstimatorNameType,
-    *args,
-    **kwds,
+    metrics: list[MetricNameType]=['MCC'],
+    **est_kwds
 ):
 
     exp = load_graph(dataset)
     X = csr_array(exp.activations.to_array().to_scipy_sparse())
-    # X = rw.to_array()
-    # A = experiment.graph.to_arrayy()
-    alg = _estimators[estimator]
-    return alg(X, *args, **kwds)
+    gT = _sq(exp.graph.to_array().todense()).astype(bool)
 
+    node_cts = X.sum(axis=0)
+    actv_cts = X.sum(axis=1)
+
+    res=dict()
+    res['ID']=dataset
+    res['kind']=dataset[:2]
+    res['n-edges']=gT.sum()
+    res['n-nodes']=exp.graph.shape[0]
+    res['n-walks']=exp.jumps.shape[0]
+    res['n-jumps']=exp.jumps.shape[1]
+
+    res['med-node-ct'] = np.median(node_cts)
+    res['iqr-node-ct'] = iqr(node_cts)
+    res['med-actv-ct'] = np.median(actv_cts)
+    res['iqr-actv-ct'] = iqr(actv_cts)
+
+    method = dict()
+    method['name']=estimator
+    # yappi.clear_stats()
+    # yappi.start()
+    # start=yappi.get_clock_time()
+    start = time.time()
+    gP = _estimators[estimator](X, **est_kwds)
+    end = time.time()
+    # end = yappi.get_clock_time()
+    # yappi.stop()
+    method['seconds']= sigfigs(end - start,5)
+    method['estimate'] = np_sigfig(gP, 5).astype(float)
+    M = m.Contingent.from_scalar(gT, gP)
+        
+    scores = {met:sigfigs(_metrics[met](M),5) for met in metrics}   
+
+    return res | method | scores
+    # return alg(X, *args, **kwds)
+    
 
 # def eval_estimator(y_pred, y_true)-> dict:  # -> MetricStuff typeddiexpectedct?
 #     # ugh

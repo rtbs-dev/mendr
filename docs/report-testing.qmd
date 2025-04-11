@@ -562,6 +562,7 @@ def compare_for_dataset(dataset_id, legend=True):
 # sns.heatmap(np.diag(1/X.sum(axis=0))@X.T@np.diag(1/X.sum(axis=1))@X)
 ```
 
+
 ```{python}
 compare_for_dataset(list(_datasets)[30])
 ```
@@ -575,12 +576,15 @@ def sigfigs(n,sig):
     # return '{:g}'.format(float('{:.{p}g}'.format(n, p=sig)))
     return float('{:.{p}g}'.format(n, p=sig))
     
-
-sigfigs(1.24412354651234, 4)
+np_sigfig = np.frompyfunc(sigfigs, 2, 1)
+sigfigs(1.24412354651234, 4), np_sigfig(np.random.rand(10), 4).astype(float)
 ```
 
 ```{python}
 # list(_datasets)[120:200]
+from serde.json import to_json
+
+# to_json(M)
 ```
 
 ```{python}

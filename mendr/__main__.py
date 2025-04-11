@@ -1,24 +1,19 @@
 from .generate import RandGraphType, graph_gen, walk_randomly
 from .io import SerialSparse, SerialRandWalks
 from .one_hot import rw_jumps_to_coords
-from .experiments import DatasetIDType, EstimatorNameType, MetricNameType, load_graph, _datasets, estimate_graph
+from .experiments import DatasetIDType, EstimatorNameType, MetricNameType, load_graph, _datasets, report, _metrics
 
 import numpy as np
 from serde.json import to_json
 from cyclopts import App
-
+from scipy.stats import iqr
 # from beartype import beartype
 import csrgraph as cg
 
 app = App()
 app.command(mendr_sim := App(name="sim"))
-app.command(mendr_test := App(name="test"))
+# app.command(mendr_test := App(name="test"))
 
-def sigfigs(n,sig):
-    # return '{:g}'.format(float('{:.{p}g}'.format(n, p=sig)))
-    return float('{:.{p}g}'.format(n, p=sig))
-    
-np_sigfig = np.frompyfunc(sigfigs, 2, 1)
 
 @mendr_sim.command
 def random_graph(kind: RandGraphType, size: int, seed: int | None = None):
@@ -53,19 +48,22 @@ def random_graph_walks(
     print(to_json(experiment))
 
 
+DEFAULT_ALGS = ['FP','FPi','CoOc','CS','MI','eOT','HSS', 'GL', 'RP']
+DEFAULT_METRICS = ['F1','F-M','MCC','APS']
 
-@mendr_test.command
-def recovery_algorithm(
-    alg: EstimatorNameType,
+@app.command
+def recovery_test(
+    method: EstimatorNameType,
     datasets: list[DatasetIDType]=_datasets,
+    metrics: list[MetricNameType]=DEFAULT_METRICS,
     **alg_kws: dict|None
 ):
+    """Run an algorithm through the MENDR datasets
+    
+    Send result report for each dataset as JSONL to stdout    
+    """
     for dataset in datasets: 
-        print(to_json({
-            'datasetID':dataset,
-            'name':alg,
-            'estimate': np_sigfig(estimate_graph(dataset, alg, **alg_kws), 4).astype(float)
-        }))
+        print(to_json(report(dataset, method,metrics,**alg_kws )))
     
 
 # def main():
