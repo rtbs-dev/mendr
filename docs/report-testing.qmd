@@ -593,8 +593,8 @@ from serde.json import to_json
 yappi.clear_stats()
 yappi.set_clock_type("wall")
 algs = ['FP','FPi','CoOc','CS','MI','eOT','HSS', 'GL', 'RP']
-# metrics = [m.F1, m.fowlkes_mallows, m.matthews_corrcoef]  # turn into registry? 
 metrics=['F1','F-M','MCC','APS']
+# metrics = [m.F1, m.fowlkes_mallows, m.matthews_corrcoef]  # turn into registry? 
 
 def process_experiment(expID, algs, metrics):
     exp = load_graph(expID)
