@@ -206,7 +206,7 @@ def report(
     # end = yappi.get_clock_time()
     # yappi.stop()
     method['seconds']= sigfigs(end - start,5)
-    method['estimate'] = np_sigfig(gP, 5).astype(float)
+    method['estimate'] = np_sigfig(gP, 5).astype(float) if gP else None
     M = m.Contingent.from_scalar(gT, gP)
         
     scores = {met:sigfigs(_metrics[met](M),5) for met in metrics}   
