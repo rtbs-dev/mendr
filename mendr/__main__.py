@@ -54,7 +54,7 @@ DEFAULT_METRICS = ['F1','F-M','MCC','APS']
 @app.command
 def recovery_test(
     method: EstimatorNameType,
-    datasets: list[DatasetIDType]=_datasets,
+    datasets: list[DatasetIDType]=list(_datasets),
     metrics: list[MetricNameType]=DEFAULT_METRICS,
     **alg_kws: dict|None
 ):
