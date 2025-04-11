@@ -29,7 +29,7 @@ coconut = {extras = ["kernel"], version = "^3.0.4"}
 hypothesis = {extras = ["numpy"], version = "^6.98.12"}
 pytest = "^8.0.2"
 hypothesis-networkx = "^0.3.0"
-dvc = "^3.49.0"
+dvc = {extras = ["s3"], version = "^3.49.0"}
 
 
 
