@@ -27,7 +27,7 @@ from sklearn.exceptions import ConvergenceWarning
 
 DATA_REPO_FS = DVCFileSystem()
 GRAPH_ID_PATT = r"[a-z//]+/([a-z]{2})\w+/(N[0-9]{3}(?:[A-Z]{1}[0-9]+)+).json"
-_dataset_paths = DATA_REPO_FS.find("/data", dvc_only=True, detail=False)
+_dataset_paths = DATA_REPO_FS.find("/data/sets", dvc_only=True, detail=False)
 
 
 def _graph_path_to_ID(fp: str) -> str:
