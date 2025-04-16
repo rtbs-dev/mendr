@@ -2,12 +2,12 @@
 title: Component and Component+residual Plots
 jupyter:
   jupytext:
-    formats: 'ipynb,qmd'
+    formats: ipynb,qmd
     text_representation:
       extension: .qmd
       format_name: quarto
       format_version: '1.0'
-      jupytext_version: 1.16.0
+      jupytext_version: 1.16.7
   kernelspec:
     display_name: mendr
     language: python
@@ -17,14 +17,67 @@ jupyter:
 ```{python}
 import pandas as pd
 import awkward as ak
-import awkward_pandas as akpd
+import akimbo.pandas
 import seaborn as sns
 # from great_tables import GT
 import json
 from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
-# pd.DataFrame.to_dict(
+from mendr.experiments import (
+    load_graph, _datasets#,_estimators, _metrics,_sq, _dataset_paths
+)# pd.DataFrame.to_dict(
+```
+
+```{python}
+sns.set_theme(font='serif',palette='Set2', context='paper', style='ticks')
+list(Path('../results').glob('*.jsonl'))
+```
+
+```{python}
+# a = ak.concatenate([ak.from_json(p, line_delimited=True) for p in Path('../results').glob('*.jsonl')])
+# a
+# ak.to_dataframe(a)
+df = pd.concat([pd.read_json(p, lines=True) for p in Path('../results').glob('*.jsonl')])
+df.head()
+```
+
+```{python}
+# ak.to_arrow(a).to_pandas()
+# df.groupby(.pipe(lambda df: df.set_index('name').)
+from sklearn.linear_model import LogisticRegression
+from affinis.utils import _sq
+from tqdm import tqdm
+betas = []
+diffs = []
+
+dats = []
+# df.query('name=="EFM"').estimate.ak.array- df.query('name=="FP"').estimate.ak.array
+for dat in tqdm(_datasets): 
+    df_sub = df.query(f'ID=="{dat}"').set_index('name')
+    gT = _sq(load_graph(dat).graph.to_array().todense()).astype(bool)
+    dats.append(gT)
+    diff = np.array(df_sub.loc['EFM'].estimate)-np.array(df_sub.loc['FP'].estimate)
+    diffs.append(diff)
+    jitter_t = 0.2*np.random.rand(gT.sum())
+    jitter_f = 0.2*np.random.rand((~gT).sum())
+    # plt.scatter(diff[gT], np.ones_like(jitter_t)+jitter_t, color='k', alpha=0.1, marker='.')
+    # plt.scatter(diff[~gT],np.zeros_like(jitter_f)+jitter_f, color='r', alpha=0.1, marker='.')
+
+    betas+=[LogisticRegression(fit_intercept=False).fit(diff.reshape(-1,1), gT).coef_[0][0]]
+
+delta = pd.DataFrame({'label':np.hstack(dats), 'diff':np.hstack(diffs)})
+    # .estimate.ak.array- df.query('name=="FP"').estimate.ak.array
+# df.query('name=="EFM"').estimate.ak.array- df.query('name=="FP"').estimate.ak.array
+```
+
+```{python}
+sns.displot(np.array(betas))
+```
+
+```{python}
+# sns.regplot(delta, x='diff', y='label', logistic=True)
+# delta
 ```
 
 ```{python}
@@ -39,10 +92,10 @@ import matplotlib.pyplot as plt
 #     )), axis=1)
 #     # .ak.to_columns(extract_all=True)
 # )
-df = pd.read_csv('res.csv', index_col=0)
+# df = pd.read_csv('res.csv', index_col=0)
 # df = pd.read_csv('res2-short.csv', index_col=0)
 
-df.head()
+# df.head()
 ```
 
 ```{python}
@@ -71,6 +124,8 @@ tidy = (
         'seconds-log': lambda df: np.log10(df['seconds']),
         # 'jump-density':lambda df: df['n-jumps']/df['n-nodes'],
         'edge-density': lambda df: df['n-edges']/(df['n-nodes']*(df['n-nodes']-1)/2.),
+        'edge-sparsity': lambda df: 1-df['edge-density'],
+
         'actv-fraction': lambda df: df['med-actv-ct']/df['n-nodes'],
         'node-baseprob': lambda df: df['med-node-ct']/df['n-walks'],
         # 'walk-density': lambda df: df['n-walks']/df['n-nodes'],
@@ -99,7 +154,10 @@ tidy#[tidy.failed]
 ```
 
 ```{python}
+tidy.query('metric=="APS"').groupby('name', observed=True)['score'].mean().sort_values(ascending=False)
+```
 
+```{python}
 avg_scores= tidy.query('metric=="MCC"').groupby('name', observed=True)['score'].mean().sort_values(ascending=False)
 avg_scores
 
@@ -107,7 +165,6 @@ avg_scores
 ```
 
 ```{python}
-sns.set_theme(font='serif',palette='Set2', context='paper', style='ticks')
 # alg_order=['TS','TSi','GL','HSS','RP','CS','eOT',]
 graph_order=['ScaleFree', 'Tree', 'Block']
 alg_order = avg_scores.index.tolist()
@@ -269,7 +326,7 @@ def compare_scores_vs(xvar, alg_order=alg_order, metric='MCC'):
         marker='.', label='experiment',
     
     )
-    g.add_legend(loc=(0.35,0.15), ncols=3)
+    g.add_legend(loc=(0.35,0.), ncols=3)
     return g
 compare_scores_vs('n-walks')
 
@@ -277,11 +334,13 @@ compare_scores_vs('n-walks')
 ```
 
 ```{python}
-compare_scores_vs('n-nodes')
+# compare_scores_vs('n-nodes')
+compare_scores_vs('n-jumps')
+# compare_scores_vs('tot-jumps')
 ```
 
 ```{python}
-compare_scores_vs('edge-density', metric='F-M')
+compare_scores_vs('edge-density', metric='MCC')
 ```
 
 ```{python}
@@ -340,8 +399,8 @@ sns.boxplot(
 
 ```{python}
 df_improv = pd.DataFrame([
-    tidy.pivot(index=['ID','metric'], columns='name', values='score').pipe(lambda df: df['FP']>df['GL']).rename('score-better'),
-    tidy.pivot(index=['ID','metric'], columns='name', values='seconds').pipe(lambda df: df['FP']<df['GL']).rename('time-better')
+    tidy.pivot(index=['ID','metric'], columns='name', values='score').pipe(lambda df: df['EFM']>df['FP']).rename('score-better'),
+    tidy.pivot(index=['ID','metric'], columns='name', values='seconds').pipe(lambda df: df['FP']<df['EFM']).rename('time-better')
 ]).T.reset_index().query("metric=='MCC'")
 df_improv
 pd.crosstab(df_improv['ID'], [df_improv['score-better'], df_improv['time-better']]).sum(axis=0).unstack()
@@ -351,7 +410,7 @@ pd.crosstab(df_improv['ID'], [df_improv['score-better'], df_improv['time-better'
 sns.histplot(
     data=(tidy
      .pivot(index=['ID','metric'], columns='name', values='score')
-     .pipe(lambda df: df['FP']/df['GL'] )
+     .pipe(lambda df: df['EFM']/df['FP'] )
      .rename('score')
      .reset_index()
      .assign(improved=lambda df: df['score']>=1)
@@ -398,7 +457,7 @@ theme_config = {**sns.axes_style('ticks')}|{"axes.spines.top": False, "axes.spin
        ), 
      y='log',
      # marker=so.Nominal(["_", "."]),
-     color=so.Nominal('Set2',order=['FP', 'GL', 'HSS'])
+     color=so.Nominal('Set2',order=['FP', 'EFM', 'GL'])
  )
  .theme(theme_config)
  .on(sf1)
@@ -408,13 +467,13 @@ theme_config = {**sns.axes_style('ticks')}|{"axes.spines.top": False, "axes.spin
 
 
 p = (so.Plot(tidy, y='seconds',color='name',marker='failed', pointsize='failed')
- .pair(x=['edge-density','med-actv-ct'])
+ .pair(x=['edge-density','n-jumps'])
  # .facet(row='name', order=['TS', 'GL','HSS'])
  .add(so.Dots(), so.Jitter(0.3))
  .scale(
      x='log', y='log',
      marker=so.Nominal([".", "x"]),
-     color=so.Nominal('Set2',order=['FP', 'GL','HSS']),
+     color=so.Nominal('Set2',order=['FP', 'EFM','GL']),
      pointsize=so.Nominal([2.,5.],order=[False,True]),
  )
  .theme(theme_config)
@@ -580,7 +639,6 @@ fp_model.summary()
 ```
 
 ```{python}
-
 fp_feats = ['seconds','n-walks','n-nodes','med-actv-ct']
 
 fp_model = ols(
@@ -646,10 +704,10 @@ from scipy.linalg import lstsq
 
 f = mpl.figure.Figure(figsize=(8, 3))
 # feats = ['n-walks','med-actv-ct', 'med-node-ct', 'n-nodes']
-feats = ['n-walks','med-actv-ct', 'n-nodes']
+feats = ['n-walks','n-jumps', 'n-nodes']
 # feats = ['n-walks', 'n-nodes']
 
-sbplts = f.subplots(1, len(feats))
+sbplts = f.subplots(1, len(feats), sharey=True)
     # x=,
 
 x= tidy.query("name=='FP'")[feats].values 
@@ -660,26 +718,73 @@ p,res,rnk,s = lstsq(M,np.log10(y))
 # p,res,rnk,s = lstsq(M,y)
 print(p)
 # plt.scatter( tidy.query("name=='TS'")['med-actv-ct'],y-M@p, color='dodgerblue', marker='.')
+resid = np.log10(y) - M@p
 for i,feat in enumerate(feats):
     x = M[:,i+1]
     pred = x*p[i+1]
-    resid = np.log10(y) - M@p
     sbplts[i].scatter( np.power(10,x),np.power(10,resid+pred), color='dodgerblue',marker='.', alpha=0.1)
-    sns.regplot(x=np.power(10,x), y=np.power(10,resid+pred), ax=sbplts[i], robust=True)
+    # sns.regplot(x=np.power(10,x), y=np.power(10,resid+pred), ax=sbplts[i], robust=True)
     x = np.linspace(x.min(), x.max())
     sbplts[i].plot( np.power(10,x),np.power(10,x*p[i+1]), color='dodgerblue')
+    # sbplts[i].plot( np.power(10,x),np.power(10,x*p[i+1]*np.log(x*p[i+1])), color='0.8')
+
     sbplts[i].set_xscale('log')
     sbplts[i].set_yscale('log')
+    sbplts[i].set_title(feat)
     # sbplts[i].scatter( tidy.query("name=='FP'")['med-actv-ct'],y-M@p+M[d:,2]*p[2], color='dodgerblue',marker='+')
+x = np.linspace(M[:,2].min(), M[:,2].max())
 
+# sbplts[1].plot(np.power(10,x),np.power(10,linearithmic([0.8,0.65,0.5], x, np.zeros_like(x))))
 # plt.scatter( tidy.query("name=='TS'")['med-node-ct'],np.power(10,y-M@p), marker='.')
 f
 ```
 
 ```{python}
+# plt.plot(x:=np.logspace(1,15), x*np.log10(x/10)/10, color='r')
+# plt.plot(x, x, color='k')
+# # plt.plot(x, x**1.11)
+# # plt.plot(x, np.log10(x))
+# plt.yscale('log')
+# plt.xscale('log')
+# plt.gca().set_aspect('equal')
+from scipy.optimize import least_squares
+res_robust = least_squares(
+    linearithmic:=lambda p,x,y: p[0]+p[1]*x*(np.log(x*p[2]))-y, 
+    np.array([1,1,1]), 
+    bounds=(0.1,1.9),
+    loss='arctan', 
+    # f_scale=0.1, 
+    args=(M[:,2],np.log10(M[:,2]+resid))
+)
+res_robust
+```
+
+```{python}
+
+plt.scatter( 
+    np.power(10,M[:,2]),
+    np.power(10,resid+M[:,2]*p[2]), 
+    color='dodgerblue',marker='.', alpha=0.1
+)
+plt.gca().set(xscale='log',yscale='log')
+x=np.linspace(M[:,2].min(),M[:,2].max())
+# print(linearithmic(res_robust['x'], x, np.zeros_like(x)-0.2))
+# plt.scatter(np.power(10,M[:,2]), np.power(10,linearithmic(res_robust['x'], M[:,2], np.zeros_like(M[:,2]))))
+plt.plot(np.power(10,x), np.power(10,linearithmic(res_robust['x'], x, np.zeros_like(x))+0.2))
+plt.plot(np.power(10,x), np.power(10,linearithmic([0.8,0.65,0.5], x, np.zeros_like(x))))
+plt.plot(np.power(10,x), np.power(10,linearithmic([0.55,0.35,0.35], x, np.zeros_like(x))))
+
+
+# linearithmic(res_robust['x'], x, np.zeros_like(x))
+# print(np.power(10,M[:,2]))
+```
+
+```{python}
 f = mpl.figure.Figure(figsize=(8, 3))
-feats = ['n-nodes','node-baseprob', 'n-walks']
-sbplts = f.subplots(1, len(feats))
+# feats = ['n-nodes','node-baseprob', 'n-walks']
+feats = ['n-walks','n-jumps', 'n-nodes']
+
+sbplts = f.subplots(1, len(feats), sharey=True)
 
 x= tidy.query("name=='GL'")[feats].values 
 M = np.c_[np.ones(x.shape[0]),np.log10(x)]
@@ -701,6 +806,8 @@ for i,feat in enumerate(feats):
     
     sbplts[i].set_xscale('log')
     sbplts[i].set_yscale('log')
+    sbplts[i].set_title(feat)
+
 f
 # plt.xscale('log')
 # plt.yscale('log')

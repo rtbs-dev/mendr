@@ -48,8 +48,8 @@ _datasets = dict(
 
 
 
-# DatasetIDType = Annotated[str, Is[lambda id: id in _datasets]]
-DatasetIDType = Literal[tuple(_datasets)]
+DatasetIDType = Annotated[str, Is[lambda id: id in _datasets]]
+# DatasetIDType = Literal[tuple(_datasets)]
 
 
 @beartype
@@ -123,8 +123,8 @@ def _alg_expected_forest_max(X, **kws):
     return _sq(asc.expected_forest_maximization(X, **kws))
 
 
-# EstimatorNameType = Annotated[str, Is[lambda s: s in list(_estimators)]]
-EstimatorNameType = Literal[tuple(_estimators)]
+EstimatorNameType = Annotated[str, Is[lambda s: s in list(_estimators)]]
+# EstimatorNameType = Literal[tuple(_estimators)]
 
 _metrics = Registry(prefix="_met_", hyphen=True, case_sensitive=True)
 
@@ -154,11 +154,11 @@ def _met_exp_matthews_correllation_coefficient(M, **kws):
 def _met_avg_precision_score(M, **kws):
     if M is None:
         return np.nan
-    return np.sum(np.diff(M.recall[::-1], prepend=0) * M.precision[::-1])
+    return m.avg_precision_score(M)
 
 
-# MetricNameType = Annotated[str, Is[lambda s: s in list(_metrics)]]
-MetricNameType = Literal[tuple(_metrics)]
+MetricNameType = Annotated[str, Is[lambda s: s in list(_metrics)]]
+# MetricNameType = Literal[tuple(_metrics)]
 
 
 def sigfigs(n,sig):

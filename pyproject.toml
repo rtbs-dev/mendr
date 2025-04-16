@@ -21,6 +21,7 @@ sparse = "^0.15.1"
 polars = "^0.20.21"
 affinis = {git = "https://github.com/rtbs-dev/affinis.git"}
 pyarrow = "^19.0.1"
+akimbo = "^2025.3.0"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -37,7 +38,6 @@ dvc = {extras = ["s3"], version = "^3.49.0"}
 autoregistry = "^1.1.2"
 dvclive = {extras = ["markdown", "sklearn"], version = "^3.45.0"}
 seaborn = "^0.13.2"
-awkward-pandas = "^2023.8.0"
 great-tables = "^0.5.0"
 statsmodels = "^0.14.2"
 yappi = "^1.6.0"

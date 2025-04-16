@@ -199,6 +199,8 @@ def fowlkes_mallows(Y:Contingent)->ProbThres:
     """
     return np.sqrt(recall(Y)*precision(Y))
 
+def avg_precision_score(Y:Contingent)->float:
+    return np.sum(np.diff(Y.recall[::-1], prepend=0) * Y.precision[::-1])
 
 # def precision(y_true, y_pred):
 #     TP,FP,TN,FN = _retrieval_square(y_true, p_pred)

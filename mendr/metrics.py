@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xd9691288
+# __coconut_hash__ = 0xb31f8adc
 
 # Compiled with Coconut version 3.1.2
 
@@ -368,6 +368,11 @@ def fowlkes_mallows(Y  # type: Contingent  #194 (line in Coconut source)
     """  #199 (line in Coconut source)
     return np.sqrt(recall(Y) * precision(Y))  #200 (line in Coconut source)
 
+
+def avg_precision_score(Y  # type: Contingent  #202 (line in Coconut source)
+    ):  #202 (line in Coconut source)
+# type: (...) -> float
+    return np.sum(np.diff(Y.recall[::-1], prepend=0) * Y.precision[::-1])  #203 (line in Coconut source)
 
 # def precision(y_true, y_pred):
 #     TP,FP,TN,FN = _retrieval_square(y_true, p_pred)

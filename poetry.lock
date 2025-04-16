@@ -222,6 +222,25 @@ files = [
 frozenlist = ">=1.1.0"
 
 [[package]]
+name = "akimbo"
+version = "2025.3.0"
+description = "Awkward Array Extension for Dataframes"
+optional = false
+python-versions = ">=3.9"
+files = [
+    {file = "akimbo-2025.3.0-py3-none-any.whl", hash = "sha256:f861263da65d18ead901f1fcabfb22f8e4c954b987eae27421429f3970070960"},
+    {file = "akimbo-2025.3.0.tar.gz", hash = "sha256:fcb18e715ed875395b2c1a86891bca3be488bee05338b93dede3b974b472d602"},
+]
+
+[package.dependencies]
+awkward = ">=2.6.5"
+pyarrow = "*"
+
+[package.extras]
+docs = ["dask", "furo", "ipython", "nbsphinx", "pandas", "pandoc", "polars", "pyarrow", "sphinx"]
+test = ["dask", "dask-awkward", "distributed", "numba", "pandas", "polars", "pyarrow", "pytest", "pytest-cov"]
+
+[[package]]
 name = "alabaster"
 version = "0.7.16"
 description = "A light, configurable Sphinx theme"
@@ -501,28 +520,6 @@ files = [
 
 [package.dependencies]
 numpy = ">=1.18.0"
-
-[[package]]
-name = "awkward-pandas"
-version = "2023.8.0"
-description = "Awkward Array Pandas Extension"
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "awkward_pandas-2023.8.0-py3-none-any.whl", hash = "sha256:fdbe33750fdf93ad7b7cf6d6f2fa03d23b0f0a9a249ae777dce270a65ce0df44"},
-    {file = "awkward_pandas-2023.8.0.tar.gz", hash = "sha256:56b7b735241502423ac9afb49db0dd3bb5905a51a53cdfe476e9d4316a975fde"},
-]
-
-[package.dependencies]
-awkward = ">=2.0.0"
-pandas = ">=1.2"
-
-[package.extras]
-complete = ["awkward-pandas[parquet,strings]"]
-docs = ["furo", "ipython", "nbsphinx", "sphinx"]
-parquet = ["pyarrow"]
-strings = ["pyarrow (>=7.0.0)"]
-test = ["awkward-pandas[complete]", "pytest (>=6.0)", "pytest-cov (>=3.0.0)"]
 
 [[package]]
 name = "babel"
@@ -6390,4 +6387,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.13"
-content-hash = "93a8fbd5d276476aa68cc4968cda943888284d822c9d4b53ac6f31d10752b8a6"
+content-hash = "09b831d5a943cade96048cc39130f519f0f102dcc380beacc562e833f4a134ec"

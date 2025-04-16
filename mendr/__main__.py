@@ -3,6 +3,8 @@ from .io import SerialSparse, SerialRandWalks
 from .one_hot import rw_jumps_to_coords
 from .experiments import DatasetIDType, EstimatorNameType, MetricNameType, load_graph, _datasets, report, _metrics
 
+from tqdm import tqdm
+
 import numpy as np
 from serde.json import to_json
 from cyclopts import App
@@ -62,7 +64,9 @@ def recovery_test(
     
     Send result report for each dataset as JSONL to stdout    
     """
-    for dataset in datasets: 
+    progress = tqdm(datasets)
+    for dataset in progress: 
+        progress.set_description(f"Graph Dataset {dataset}")
         print(to_json(report(dataset, method,metrics,**alg_kws )))
     
 
