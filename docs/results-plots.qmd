@@ -43,41 +43,9 @@ df.head()
 ```
 
 ```{python}
-# ak.to_arrow(a).to_pandas()
-# df.groupby(.pipe(lambda df: df.set_index('name').)
-from sklearn.linear_model import LogisticRegression
-from affinis.utils import _sq
-from tqdm import tqdm
-betas = []
-diffs = []
-
-dats = []
-# df.query('name=="EFM"').estimate.ak.array- df.query('name=="FP"').estimate.ak.array
-for dat in tqdm(_datasets): 
-    df_sub = df.query(f'ID=="{dat}"').set_index('name')
-    gT = _sq(load_graph(dat).graph.to_array().todense()).astype(bool)
-    dats.append(gT)
-    diff = np.array(df_sub.loc['EFM'].estimate)-np.array(df_sub.loc['FP'].estimate)
-    diffs.append(diff)
-    jitter_t = 0.2*np.random.rand(gT.sum())
-    jitter_f = 0.2*np.random.rand((~gT).sum())
-    # plt.scatter(diff[gT], np.ones_like(jitter_t)+jitter_t, color='k', alpha=0.1, marker='.')
-    # plt.scatter(diff[~gT],np.zeros_like(jitter_f)+jitter_f, color='r', alpha=0.1, marker='.')
-
-    betas+=[LogisticRegression(fit_intercept=False).fit(diff.reshape(-1,1), gT).coef_[0][0]]
-
-delta = pd.DataFrame({'label':np.hstack(dats), 'diff':np.hstack(diffs)})
-    # .estimate.ak.array- df.query('name=="FP"').estimate.ak.array
-# df.query('name=="EFM"').estimate.ak.array- df.query('name=="FP"').estimate.ak.array
-```
-
-```{python}
-sns.displot(np.array(betas))
-```
-
-```{python}
 # sns.regplot(delta, x='diff', y='label', logistic=True)
 # delta
+df.set_index(['ID','name']).sort_index()
 ```
 
 ```{python}
@@ -162,6 +130,39 @@ avg_scores= tidy.query('metric=="MCC"').groupby('name', observed=True)['score'].
 avg_scores
 
 # pd.DataFrame.groupby()
+```
+
+```{python}
+# ak.to_arrow(a).to_pandas()
+# df.groupby(.pipe(lambda df: df.set_index('name').)
+from sklearn.linear_model import LogisticRegression
+from affinis.utils import _sq
+from tqdm import tqdm
+betas = []
+diffs = []
+
+dats = []
+# df.query('name=="EFM"').estimate.ak.array- df.query('name=="FP"').estimate.ak.array
+for dat in tqdm(_datasets): 
+    df_sub = df.query(f'ID=="{dat}"').set_index('name')
+    gT = _sq(load_graph(dat).graph.to_array().todense()).astype(bool)
+    dats.append(gT)
+    diff = np.array(df_sub.loc['EFM'].estimate)-np.array(df_sub.loc['FP'].estimate)
+    diffs.append(diff)
+    jitter_t = 0.2*np.random.rand(gT.sum())
+    jitter_f = 0.2*np.random.rand((~gT).sum())
+    # plt.scatter(diff[gT], np.ones_like(jitter_t)+jitter_t, color='k', alpha=0.1, marker='.')
+    # plt.scatter(diff[~gT],np.zeros_like(jitter_f)+jitter_f, color='r', alpha=0.1, marker='.')
+
+    betas+=[LogisticRegression(fit_intercept=False).fit(diff.reshape(-1,1), gT).coef_[0][0]]
+
+delta = pd.DataFrame({'label':np.hstack(dats), 'diff':np.hstack(diffs)})
+    # .estimate.ak.array- df.query('name=="FP"').estimate.ak.array
+# df.query('name=="EFM"').estimate.ak.array- df.query('name=="FP"').estimate.ak.array
+```
+
+```{python}
+sns.displot(np.array(betas))
 ```
 
 ```{python}
@@ -760,7 +761,6 @@ res_robust
 ```
 
 ```{python}
-
 plt.scatter( 
     np.power(10,M[:,2]),
     np.power(10,resid+M[:,2]*p[2]), 

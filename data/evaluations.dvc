@@ -3,4 +3,4 @@ outs:
   size: 239316940
   nfiles: 6
   hash: md5
-  path: results
+  path: evaluations
