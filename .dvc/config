@@ -4,3 +4,4 @@
 ['remote "origin"']
     url = s3://dvc
     endpointurl = https://dagshub.com/rtbs-dev/mendr.s3
+    acl = public-read
