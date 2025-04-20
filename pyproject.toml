@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "MENDR"
-version = "0.3.1"
+version = "0.3.2"
 description = "Measurement Error in Network Diffusion Datasets for graph Reconstruction"
 authors = ["Rachael T. Sexton <rtbs@nist.gov>"]
 license = "NIST"
@@ -20,7 +20,7 @@ pyserde = "^0.14"
 sparse = "^0.15"
 affinis = {git = "https://github.com/rtbs-dev/affinis.git"}
 pyarrow = "^19.0"
-
+autoregistry = "^1.1.2"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.29.2"
@@ -33,7 +33,6 @@ akimbo = "*"
 polars = "^0.20"
 
 [tool.poetry.group.report.dependencies]
-autoregistry = "^1.1.2"
 dvclive = {extras = ["markdown", "sklearn"], version = "^3.45.0"}
 seaborn = "^0.13.2"
 great-tables = "^0.5.0"
