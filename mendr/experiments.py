@@ -7,13 +7,12 @@ from pathlib import Path
 from beartype import beartype
 from beartype.vale import Is
 from serde.json import from_json
-from dvclive import Live
 
 from affinis import associations as asc
 from affinis.utils import _sq
 from affinis.proximity import sinkhorn
 
-from mendr.io import SerialRandWalks, SerialSparse
+from mendr.io import SerialRandWalks#, SerialSparse
 import mendr.metrics as m
 
 import numpy as np
@@ -21,7 +20,7 @@ import numpy as np
 from scipy.integrate import trapezoid
 from scipy.sparse import csr_array
 from scipy.stats import iqr
-from sklearn.covariance import GraphicalLassoCV, graphical_lasso
+from sklearn.covariance import GraphicalLassoCV#, graphical_lasso
 from sklearn.utils._testing import ignore_warnings
 from sklearn.exceptions import ConvergenceWarning
 
@@ -213,25 +212,4 @@ def report(
 
     return res | method | scores
     # return alg(X, *args, **kwds)
-    
-
-# def eval_estimator(y_pred, y_true)-> dict:  # -> MetricStuff typeddiexpectedct?
-#     # ugh
-#     p,r,t = precision_recall_curve(y_true, y_pred, drop_intermediate=True)
-
-
-def run_experiment(graph_id: DatasetIDType, algs: list[EstimatorNameType]) -> None:
-    with Live(f"reports/{graph_id}", report="md", exp_name=graph_id) as live:
-        # expected# prelim exp stuff
-        exp = load_graph(graph_id)
-        y_true = exp.graph.to_array()  # TODO FLATTEN ME!!
-        for alg in algs:
-            # per-alg-stuff
-            pred = estimate_graph(exp.activations, alg)  # TODO handle args/kwargs
-            # metrics = eval_estimator(pred, ytrue)
-            M = m.Contingent.from_scalar(y_true, pred)
-
-            for metric, val in metrics.items():
-                live.log_metric(f"{alg}/{metric}", val)  # nested??
-        # post-exp stuff
-    ...
+   
