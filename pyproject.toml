@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "MENDR"
-version = "0.3.0"
+version = "0.3.1"
 description = "Measurement Error in Network Diffusion Datasets for graph Reconstruction"
 authors = ["Rachael T. Sexton <rtbs@nist.gov>"]
 license = "NIST"
@@ -10,18 +10,18 @@ packages = [{include = "mendr"}]
 [tool.poetry.dependencies]
 python = ">=3.10,<3.13"
 networkx = "^3.2.1"
-numpy = "^1.26.4"
-scipy = "^1.12.0"
-cyclopts = "^2.3.2"
+numpy = ">=1.26,<2.3"
+scipy = "^1.12"
+cyclopts = "^2.3"
 csrgraph = {git = "https://github.com/VHRanger/CSRGraph.git"}
 jaxtyping = "^0.2.25"
 beartype = "^0.17.2"
-pyserde = "^0.14.0"
-sparse = "^0.15.1"
-polars = "^0.20.21"
+pyserde = "^0.14"
+sparse = "^0.15"
+polars = "^0.20"
 affinis = {git = "https://github.com/rtbs-dev/affinis.git"}
-pyarrow = "^19.0.1"
-akimbo = "^2025.3.0"
+pyarrow = "^19.0"
+akimbo = "^2025.3"
 
 
 [tool.poetry.group.dev.dependencies]
