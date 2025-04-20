@@ -18,10 +18,8 @@ jaxtyping = "^0.2.25"
 beartype = "^0.17.2"
 pyserde = "^0.14"
 sparse = "^0.15"
-polars = "^0.20"
 affinis = {git = "https://github.com/rtbs-dev/affinis.git"}
 pyarrow = "^19.0"
-akimbo = "^2025.3"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -31,8 +29,8 @@ hypothesis = {extras = ["numpy"], version = "^6.98.12"}
 pytest = "^8.0.2"
 hypothesis-networkx = "^0.3.0"
 dvc = {extras = ["s3"], version = "^3.49.0"}
-
-
+akimbo = "*"
+polars = "^0.20"
 
 [tool.poetry.group.report.dependencies]
 autoregistry = "^1.1.2"
