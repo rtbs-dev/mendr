@@ -121,6 +121,10 @@ def _alg_forest_pursuit_interactions(X, **kws):
 def _alg_expected_forest_max(X, **kws):
     return _sq(asc.expected_forest_maximization(X, **kws))
 
+@_estimators(aliases=["HYP", "hyperbolic-projection"])
+def _alg_hyperbolic_project(X, **kws):
+    w_hyp = 1/(X.sum(axis=1)-1)
+    return _sq(((X.T*w_hyp)@X).toarray()) 
 
 EstimatorNameType = Annotated[str, Is[lambda s: s in list(_estimators)]]
 # EstimatorNameType = Literal[tuple(_estimators)]
