@@ -211,7 +211,6 @@ def report(
         n1, n2 = np.triu(_sq(A_FP)).nonzero()
         # print(n1.shape)
         e = np.ma.nonzero(A_FP)[0]
-        print(e.shape, n1.shape, n2.shape)
         B = coo_array((np.concatenate([A_FP, -A_FP]), (np.concatenate([e,e]),np.concatenate([n1,n2]))), shape=(e.shape[0], X.shape[1]))
 
         # np.diag((B.T@B).toarray())==np.diag(nx.laplacian_matrix(G).toarray()).round(1)
