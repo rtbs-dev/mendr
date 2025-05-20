@@ -30,6 +30,48 @@ import seaborn as sns
 ```
 
 ```{python}
+def APS(M): 
+    return np.sum(np.diff(M.recall[::-1], prepend=0) * M.precision[::-1])
+
+
+def contour_Fscore(ax=None):
+    if ax is None: 
+        ax = plt.gca()
+    thres = np.linspace(0.2, 0.8, num=4)
+    lines, labels = [], []
+    for t in thres:
+        # recall = np.linspace(0.00001, 1., num=100)
+        # recall = np.logspace(-5, 0., num=100)
+        recall_f1 = np.linspace(t/(2-t), 1.)
+        recall_fm = np.linspace(t**2,1.)
+        prec_f1 = t * recall_f1 / (2 * recall_f1 - t)
+        # prec_f1 = 1/(2/t - 1/recall)
+        # f1_bound = (recall>t/2)&(1.1>=prec_f1)# (0<=prec_f1)&(1>=prec_f1)
+        prec_fm = t**2/recall_fm
+        # fm_bound = (0<=y_fm)&(1>=y_fm)
+
+        # (l,) = ax.plot(recall[f1_bound], prec_f1[f1_bound], color="0.8")
+        # (l,) = ax.plot(x[fm_bound], y_fm[fm_bound], color="0.9")
+        (l,) = ax.plot(recall_f1, prec_f1, color="0.8")
+        (l,) = ax.plot(recall_fm, prec_fm, color="0.95")
+        # midpt = y_fm[25]-0.03
+        ax.annotate(f"{t:0.1f}", xy=(t-.02, t-0.02), color='0.8', bbox=dict(facecolor='white', linewidth=0, alpha=0.5))
+        # print(y_f1[24])
+
+        # plt.annotate("f1={0:0.1f}".format(f_score), xy=(1.1, y_f1[48]-0.01), color='xkcd:orange')
+        # return plt.gca()
+    # ax.legend()
+    ax.annotate(r"$F_1$", xy=(1.01, 0.2/(2-0.2)-0.01), color='0.8')
+    ax.annotate(r"F-M", xy=(1.01, 0.2**2-0.01), color='0.9')
+    ax.set(
+        ylim=(0,1.1),
+        xlim=(0,1.1),
+        ylabel='Precision',
+        xlabel='Recall'
+    )
+```
+
+```{python}
 rng = np.random.default_rng(2)
 
 X = rng.choice(rng.beta(0.3, 0.7, size=10), size=25)
@@ -104,41 +146,6 @@ trapezoid(m.fowlkes_mallows(Y), x=T), m.fowlkes_mallows(Y).mean(), #-simpson(m.f
 ```{python}
 plt.figure(figsize=(5,5))
 
-def contour_Fscore(ax=None):
-    if ax is None: 
-        ax = plt.gca()
-    thres = np.linspace(0.2, 0.8, num=4)
-    lines, labels = [], []
-    for t in thres:
-        # recall = np.linspace(0.00001, 1., num=100)
-        # recall = np.logspace(-5, 0., num=100)
-        recall_f1 = np.linspace(t/(2-t), 1.)
-        recall_fm = np.linspace(t**2,1.)
-        prec_f1 = t * recall_f1 / (2 * recall_f1 - t)
-        # prec_f1 = 1/(2/t - 1/recall)
-        # f1_bound = (recall>t/2)&(1.1>=prec_f1)# (0<=prec_f1)&(1>=prec_f1)
-        prec_fm = t**2/recall_fm
-        # fm_bound = (0<=y_fm)&(1>=y_fm)
-
-        # (l,) = ax.plot(recall[f1_bound], prec_f1[f1_bound], color="0.8")
-        # (l,) = ax.plot(x[fm_bound], y_fm[fm_bound], color="0.9")
-        (l,) = ax.plot(recall_f1, prec_f1, color="0.8")
-        (l,) = ax.plot(recall_fm, prec_fm, color="0.95")
-        # midpt = y_fm[25]-0.03
-        ax.annotate(f"{t:0.1f}", xy=(t-.02, t-0.02), color='0.8', bbox=dict(facecolor='white', linewidth=0, alpha=0.5))
-        # print(y_f1[24])
-
-        # plt.annotate("f1={0:0.1f}".format(f_score), xy=(1.1, y_f1[48]-0.01), color='xkcd:orange')
-        # return plt.gca()
-    # ax.legend()
-    ax.annotate(r"$F_1$", xy=(1.01, 0.2/(2-0.2)-0.01), color='0.8')
-    ax.annotate(r"F-M", xy=(1.01, 0.2**2-0.01), color='0.9')
-    ax.set(
-        ylim=(0,1.1),
-        xlim=(0,1.1),
-        ylabel='Precision',
-        xlabel='Recall'
-    )
 
 # plt.legend(d)
 
@@ -219,13 +226,6 @@ X.sum(axis=1).mean()**2/X.shape[1]**2
 ```
 
 ```{python}
-# X.toarray()
-# _sq((X.T@X).toarray())
-minmax_tf(_sq(coocur_prob(X)))
-# X
-```
-
-```{python}
 # exp.activations.to_array().sum(axis=1).mean(), exp.jumps.shape[1]
 # X.todense()
 glcv = GraphicalLassoCV(assume_centered=True).fit(X.toarray())
@@ -240,37 +240,10 @@ plt.plot(M_GL.weights, M_GL.mcc, color='k', alpha=0.3)
 ```
 
 ```{python}
-# plt.imshow(sinkhorn(X).todense())
-# w,n=X.shape
-# BA = np.block(
-#     [[np.zeros((n,n)),X.todense().T],
-#      [X.todense(),np.zeros((w,w))]]
-# )
-# Snk = sinkhorn(BA)
-# hinton((Snk.T@Snk)[:n,:n])
-```
-
-```{python}
-# pseudocount(0.5)(X, X.sum(axis=0))
-
-# np.dot(X.sum(axis=0), X.sum(axis=1))
-# (X.T@X).todense()/np.multiply.outer(X.sum(axis=0), np.ones(X.shape[1]))
-# D = np.diag(1/X.sum(axis=0))
-# (1-D@(X.T) == (X/X.sum(axis=0)).T).sum()
-
-# list(_datasets)[200]
-# BA.shape
-# _estimators['TS'](X)
-
-# _pursue_tree_basis(
-csr_array(sparse.COO.from_scipy_sparse(X).to_scipy_sparse()).sum(axis=0)
-```
-
-```{python}
-gP_FP = _sq(forest_pursuit_edge(X))
+gP = _sq(forest_pursuit_edge(X))
 # Bp = sparse_adj_to_incidence()
 # Bp
-M_FP = m.Contingent.from_scalar(gT,gP_FP)
+M_FP = m.Contingent.from_scalar(gT,gP)
 
 plt.plot(M_FP.weights, M_FP.mcc, color='b', alpha=0.8)
 
@@ -285,15 +258,14 @@ plt.plot(M_EFM.weights, M_EFM.mcc, color='orange', alpha=0.8)
 ```
 
 ```{python}
-def APS(M): 
-    return np.sum(np.diff(M.recall[::-1], prepend=0) * M.precision[::-1])
-
 plt.figure(figsize=(5,5))
 
 contour_Fscore()
 plt.step(M_GL.recall, M_GL.precision, color='k', ls='--', where='post', label=f'GL: {APS(M_GL):.2f}')
 plt.step(M_FP.recall, M_FP.precision, color='b', ls='--', where='post', label=f'FP: {APS(M_FP):.2f}')
 plt.step(M_EFM.recall, M_EFM.precision, color='orange', ls='--', where='post', label=f'EFM: {APS(M_EFM):.2f}')
+plt.step(M.recall, M.precision, color='green', ls='--', where='post', label=f'Hyp: {APS(M):.2f}')
+
 plt.legend()
 ```
 
@@ -315,6 +287,45 @@ Xest = 1-sparse.pow((1-X.sum(axis=0)/X.shape[0]), deg_est)
 # print(deg_est)
 print((lambda a: np.round(np.sqrt(sparse.diagonal(a.T@a).sum()),5))(sparse.COO.from_scipy_sparse(X) - Xest))
 sns.histplot(np.ma.masked_less(gP, 0.2))
+```
+
+```{python}
+rowmarg = 2*(X.toarray().sum(axis=1)-1)
+colmarg = X.shape[0]*np.ones(X.shape[1])
+print(X.shape)
+# sns.heatmap(((((X.T/rowmarg).T/colmarg).T/rowmarg).T/colmarg).toarray())
+Xp = X.copy()
+ai = rowmarg.copy()
+bi=colmarg.copy()
+for i in range(200):
+    # Xp = Xp*colmarg/Xp.sum(axis=0)
+    ai = 2*rowmarg/(X@bi)
+    # Xp = (Xp.T*rowmarg/Xp.sum(axis=1)).T
+    bi = .5*colmarg/(ai@X)
+
+Xp = np.outer(ai,bi)*X
+# sns.heatmap(Xp.toarray())
+# Xp.sum(axis=1)
+
+# X.sum(axis=1)>0
+# bi*10
+# bi
+# rowmarg
+# Xp.data
+# X.sum(axis=1) 
+Xest.todense()
+```
+
+```{python}
+rowmarg@X
+X@colmarg
+```
+
+```{python}
+sns.histplot(deg_est.shape[0]*(deg_est/deg_est.sum(axis=0)).data, bins=10)
+sns.histplot(Xp.data, bins=10)
+
+sns.histplot(((deg_est.shape[0]*(deg_est/deg_est.sum(axis=0))) - sparse.COO.from_scipy_sparse(Xp)).data)
 ```
 
 ```{python}
@@ -592,7 +603,7 @@ def compare_for_dataset(dataset_id, legend=True):
         # sf1.legend(**legend_kws)
     
     handle_algs(['FP','FPi','GL'], sf1)  # 'EFM'
-    handle_algs(['CoOc','CS','MI'], sf2)
+    handle_algs(['CoOc','CS','HYP'], sf2)
     handle_algs(['eOT','HSS', 'RP'], sf3)
     # sf3.legend(**legend_kws)
 
@@ -612,7 +623,7 @@ compare_for_dataset(list(_datasets)[30])
 ```
 
 ```{python}
-compare_for_dataset(list(_datasets)[210], legend=False)
+compare_for_dataset(list(_datasets)[210])
 ```
 
 ```{python}

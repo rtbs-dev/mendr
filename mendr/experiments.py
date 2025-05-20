@@ -9,6 +9,7 @@ from beartype.vale import Is
 from serde.json import from_json
 
 from affinis import associations as asc
+from affinis.associations import _spanning_forests_obs_bootstrap
 from affinis.utils import _sq
 from affinis.proximity import sinkhorn
 
@@ -18,7 +19,7 @@ import mendr.metrics as m
 import numpy as np
 
 from scipy.integrate import trapezoid
-from scipy.sparse import csr_array
+from scipy.sparse import csr_array,coo_array
 from scipy.stats import iqr
 from sklearn.covariance import GraphicalLassoCV#, graphical_lasso
 from sklearn.utils._testing import ignore_warnings
@@ -175,16 +176,17 @@ def report(
     dataset: DatasetIDType,
     estimator: EstimatorNameType,
     metrics: list[MetricNameType]=['MCC'],
+    preproc: Literal['forest']|None=None,
     **est_kwds
 ):
 
     exp = load_graph(dataset)
     X = csr_array(exp.activations.to_array().to_scipy_sparse())
     gT = _sq(exp.graph.to_array().todense()).astype(bool)
-
+    
     node_cts = X.sum(axis=0)
     actv_cts = X.sum(axis=1)
-
+    
     res=dict()
     res['ID']=dataset
     res['kind']=dataset[:2]
@@ -203,6 +205,18 @@ def report(
     # yappi.clear_stats()
     # yappi.start()
     # start=yappi.get_clock_time()
+    if preproc=='forest':
+        E_obs = _spanning_forests_obs_bootstrap(X)
+        A_FP = _sq(asc.forest_pursuit_edge(X))
+        n1, n2 = np.triu(_sq(A_FP)).nonzero()
+        # print(n1.shape)
+        e = np.ma.nonzero(A_FP)[0]
+        print(e.shape, n1.shape, n2.shape)
+        B = coo_array((np.concatenate([A_FP, -A_FP]), (np.concatenate([e,e]),np.concatenate([n1,n2]))), shape=(e.shape[0], X.shape[1]))
+
+        # np.diag((B.T@B).toarray())==np.diag(nx.laplacian_matrix(G).toarray()).round(1)
+        X=(E_obs@(np.abs(B))).toarray()
+
     start = time.time()
     gP = _estimators[estimator](X, **est_kwds)
     end = time.time()

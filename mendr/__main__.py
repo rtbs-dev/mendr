@@ -11,6 +11,7 @@ from cyclopts import App
 from scipy.stats import iqr
 # from beartype import beartype
 import csrgraph as cg
+from typing import Literal
 
 app = App()
 app.command(mendr_sim := App(name="sim"))
@@ -58,6 +59,7 @@ def recovery_test(
     method: EstimatorNameType,
     datasets: list[DatasetIDType]=list(_datasets),
     metrics: list[MetricNameType]=DEFAULT_METRICS,
+    preprocess: Literal["forest"]|None=None,
     **alg_kws: dict|None
 ):
     """Run an algorithm through the MENDR datasets
@@ -67,7 +69,7 @@ def recovery_test(
     progress = tqdm(datasets)
     for dataset in progress: 
         progress.set_description(f"Graph Dataset {dataset}")
-        print(to_json(report(dataset, method,metrics,**alg_kws )))
+        print(to_json(report(dataset, method,metrics,preproc=preprocess,**alg_kws )))
     
 
 # def main():
