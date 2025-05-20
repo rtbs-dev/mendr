@@ -206,6 +206,7 @@ def report(
     # yappi.start()
     # start=yappi.get_clock_time()
     if preproc=='forest':
+        res['name'] = estimator+'-FP'
         E_obs = _spanning_forests_obs_bootstrap(X)
         A_FP = _sq(asc.forest_pursuit_edge(X))
         n1, n2 = np.triu(_sq(A_FP)).nonzero()
@@ -214,7 +215,7 @@ def report(
         B = coo_array((np.concatenate([A_FP, -A_FP]), (np.concatenate([e,e]),np.concatenate([n1,n2]))), shape=(e.shape[0], X.shape[1]))
 
         # np.diag((B.T@B).toarray())==np.diag(nx.laplacian_matrix(G).toarray()).round(1)
-        X=(E_obs@(np.abs(B))).toarray()
+        X=(E_obs@(np.abs(B)))
 
     start = time.time()
     gP = _estimators[estimator](X, **est_kwds)
