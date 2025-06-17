@@ -20,7 +20,7 @@ tests = ["hypothesis", "pytest"]
 
 [[package]]
 name = "affinis"
-version = "0.6.4"
+version = "0.6.5"
 description = ""
 optional = false
 python-versions = ">=3.10,<3.13"
@@ -37,7 +37,7 @@ sparse = "^0.15.4"
 type = "git"
 url = "https://github.com/rtbs-dev/affinis.git"
 reference = "HEAD"
-resolved_reference = "9ad728466945747cb9945ea30958197b3839dc21"
+resolved_reference = "50b05a13a33ba4087997bab6b2df5bac11a035e4"
 
 [[package]]
 name = "aiobotocore"

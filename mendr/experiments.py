@@ -12,6 +12,7 @@ from affinis import associations as asc
 from affinis.associations import _spanning_forests_obs_bootstrap
 from affinis.utils import _sq
 from affinis.proximity import sinkhorn
+from affinis.filter import min_connected_filter
 
 from mendr.io import SerialRandWalks#, SerialSparse
 import mendr.metrics as m
@@ -153,6 +154,16 @@ def _met_exp_matthews_correllation_coefficient(M, **kws):
         return np.nan
     return trapezoid(m.matthews_corrcoef(M), x=M.weights)
 
+@_metrics(aliases=['MCC-max'])
+def _met_max_matthews_coorelation_coefficient(M, **kws):
+    if M is None:
+        return np.nan
+    return m.matthews_corrcoef(M).max()
+
+# def _met_min_connected_matthews_corrcoef(M, **kws):
+#     if M is None:
+#         return np.nan
+#     return m.Contingent(gT, ~min_connected_filter(gP).mask).mcc
 
 @_metrics(aliases=["APS", "expected-precision"])
 def _met_avg_precision_score(M, **kws):
@@ -225,8 +236,14 @@ def report(
     method['seconds']= sigfigs(end - start,5)
     method['estimate'] = np_sigfig(gP, 5).astype(float) if gP is not None else None
     M = m.Contingent.from_scalar(gT, gP)
-        
+
+                
     scores = {met:sigfigs(_metrics[met](M),5) for met in metrics}   
+
+    #TODO fix to unify API somehow
+    filt = ~min_connected_filter(gP).mask if gP is not None else None
+    scores['MCC-min'] = np_sigfig(m.Contingent(gT, filt).mcc, 5)[0] if filt is not None else None 
+    # print(scores)
 
     return res | method | scores
     # return alg(X, *args, **kwds)

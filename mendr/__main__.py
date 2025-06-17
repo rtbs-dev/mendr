@@ -52,7 +52,7 @@ def random_graph_walks(
 
 
 DEFAULT_ALGS = ['FP','FPi','CoOc','CS','MI','eOT','HSS', 'GL', 'RP']
-DEFAULT_METRICS = ['F1','F-M','MCC','APS']
+DEFAULT_METRICS = ['F1','F-M','MCC','APS', 'MCC-max']
 
 @app.command
 def recovery_test(
