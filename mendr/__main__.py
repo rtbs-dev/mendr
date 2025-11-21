@@ -14,7 +14,10 @@ import csrgraph as cg
 from typing import Literal
 
 app = App()
-app.command(mendr_sim := App(name="sim"))
+app.command(mendr_sim := App(
+    name="sim",
+    help="Randomly generate a grame and simulate a random-walk"
+))
 # app.command(mendr_test := App(name="test"))
 
 
