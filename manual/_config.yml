@@ -2,7 +2,7 @@
 # Learn more at https://jupyterbook.org/customize/config.html
 
 title: "Library and Dataset Reference: MENDR"
-author: Rachael Sexton, NIST EL SID
+author: Dr. Rachael Sexton
 logo: logo.png
 
 only_build_toc_files: true
@@ -45,11 +45,26 @@ sphinx:
     # napoleon_use_param: True
     autodoc_typehints: 'description'
     latex_toplevel_sectioning: 'section'
+    html_show_copyright: false
     html_theme_options: 
+      extra_footer: |
+        <p><em>
+        This material is declared a work of the U.S. Government and is not subject to copyright protection in the United States.
+        </em></p>
+        <p><em>
+        Approved for public release; distribution is unlimited.
+        </em></p>
       home_page_in_toc: true
+      navbar_center:
+        - "header.html"
+      footer_start:
+        - "footer.html"
       logo:
         image_light: logo.png
         image_dark: logo-dark.png
+    templates_path: "_templates"
+    html_css_files:
+      - "nist-combined.css"
 parse:
   myst_enable_extensions: 
     - dollarmath
