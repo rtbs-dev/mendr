@@ -8,6 +8,11 @@ MENDR is a benchmarking data and results registry, along with tooling for accura
 ```{tableofcontents}
 ```
 
+## Leaderboard
+Current performance leaderboard for various methods on the MENDR challenge datasets, as originally reported in {cite}`sexton2025measuring`.
+
+![table](https://dissertation.rtbs.dev/content/part2/2-05-forest-pursuit.html#tbl-fp)
+
 ## What does it help with?
 
 Recovering graph structure from binary node activations is a difficult problem, especially when that data is generated from diffusion-like processes (say, random-walks). 

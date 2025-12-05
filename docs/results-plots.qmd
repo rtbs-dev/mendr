@@ -7,12 +7,13 @@ jupyter:
       extension: .qmd
       format_name: quarto
       format_version: '1.0'
-      jupytext_version: 1.16.7
+      jupytext_version: 1.17.2
   kernelspec:
     display_name: mendr
     language: python
     name: mendr
 ---
+
 
 ```{python}
 import pandas as pd
@@ -31,21 +32,27 @@ from mendr.experiments import (
 
 ```{python}
 sns.set_theme(font='serif',palette='Set2', context='paper', style='ticks')
-list(Path('../results').glob('*.jsonl'))
+# list(Path('../results').glob('*.jsonl'))
+datapath = Path('../data')
 ```
 
 ```{python}
 # a = ak.concatenate([ak.from_json(p, line_delimited=True) for p in Path('../results').glob('*.jsonl')])
 # a
 # ak.to_dataframe(a)
-df = pd.concat([pd.read_json(p, lines=True) for p in Path('../results').glob('*.jsonl')])
-df.head()
+df = pd.concat(
+    [pd.read_json(p, lines=True) for p in datapath.glob('evaluations/*.jsonl')]
+).replace(
+    {'kind':['TR','BL','SC']}, value={'kind':['Tree','Block','ScaleFree']}
+).rename(columns={'F1':'E[F1]', 'F-M':'E[F-M]','MCC':'E[MCC]'})#.assign()
+# {'TR':'Tree','BL':'Block', 'SC':'ScaleFree'}
+df
 ```
 
 ```{python}
 # sns.regplot(delta, x='diff', y='label', logistic=True)
 # delta
-df.set_index(['ID','name']).sort_index()
+# df.set_index(['ID','name']).sort_index()
 ```
 
 ```{python}
@@ -71,54 +78,56 @@ df.set_index(['ID','name']).sort_index()
 ```
 
 ```{python}
-tidy = (
-    df
-    # .drop(['thres-vals', 'F1','matthews_corrcoef', 'fowlkes_mallows'], axis=1)
-    .melt(
-        id_vars=['ID', 'kind','name','n-nodes','n-edges','n-walks','n-jumps',
-                 'med-node-ct','iqr-node-ct','med-actv-ct','iqr-actv-ct',
-                 'seconds'], 
-        value_vars=['F-M','MCC','F1', 'APS'],
-        value_name='score', var_name='metric'
-    )
-    .astype({
-        'kind':'category', 
-        'name':'category', 
-        'metric': 'category',
-        'ID':str,
-    })
-    .assign(**{
-        'kind': lambda df: df['kind'].cat.rename_categories({'TR':'Tree','BL':'Block', 'SC':'ScaleFree'}),
-        'seconds-log': lambda df: np.log10(df['seconds']),
-        # 'jump-density':lambda df: df['n-jumps']/df['n-nodes'],
-        'edge-density': lambda df: df['n-edges']/(df['n-nodes']*(df['n-nodes']-1)/2.),
-        'edge-sparsity': lambda df: 1-df['edge-density'],
-
-        'actv-fraction': lambda df: df['med-actv-ct']/df['n-nodes'],
-        'node-baseprob': lambda df: df['med-node-ct']/df['n-walks'],
-        # 'walk-density': lambda df: df['n-walks']/df['n-nodes'],
-        # 'nodes-norm': lambda df: 1/df['walk-density'],
-        # https://www.researchgate.net/publication/271685622_User%27s_Guide_to_Ratio_Variables
-        'sec-per-walk': lambda df: df['seconds']/df['n-walks'],
-        'logsec-per-walk': lambda df: np.log(df['sec-per-walk']),
-        'node-exposure': lambda df: df['n-nodes']/df['n-walks'],
-        'inv-walks': lambda df: 1/df['n-walks'],
-        # 'jump-sparsity'
-        'tot-jumps': lambda df: df['n-jumps']*df['n-walks'],
-        'MIR': lambda df: 1/df.groupby(['ID','metric'], observed=True)['score'].rank(ascending=False),
-        'failed': lambda df: df['score'].isna()
-    })
+def tidy_up(df, algs, graphs, metrics): 
+    return (
+        df
+        # .drop(['thres-vals', 'F1','matthews_corrcoef', 'fowlkes_mallows'], axis=1)
+        .melt(
+            id_vars=['ID', 'kind','name','n-nodes','n-edges','n-walks','n-jumps',
+                     'med-node-ct','iqr-node-ct','med-actv-ct','iqr-actv-ct',
+                     'seconds'], 
+            value_vars=['E[F-M]','E[MCC]','E[F1]', 'APS', 'MCC-max', 'MCC-min'],
+            value_name='score', var_name='metric'
+        )
+        .astype({
+            'kind':'category', 
+            'name':'category', 
+            'metric': 'category',
+            'ID':str,
+        })
+        .assign(**{
+            # 'kind': lambda df: df['kind'].cat.rename_categories({'TR':'Tree','BL':'Block', 'SC':'ScaleFree'}),
+            'seconds-log': lambda df: np.log10(df['seconds']),
+            # 'jump-density':lambda df: df['n-jumps']/df['n-nodes'],
+            'edge-density': lambda df: df['n-edges']/(df['n-nodes']*(df['n-nodes']-1)/2.),
+            'edge-sparsity': lambda df: 1-df['edge-density'],
     
-)
-tidy.dtypes#.kind
+            'actv-fraction': lambda df: df['med-actv-ct']/df['n-nodes'],
+            'node-baseprob': lambda df: df['med-node-ct']/df['n-walks'],
+            # 'walk-density': lambda df: df['n-walks']/df['n-nodes'],
+            # 'nodes-norm': lambda df: 1/df['walk-density'],
+            # https://www.researchgate.net/publication/271685622_User%27s_Guide_to_Ratio_Variables
+            'sec-per-walk': lambda df: df['seconds']/df['n-walks'],
+            'logsec-per-walk': lambda df: np.log(df['sec-per-walk']),
+            'node-exposure': lambda df: df['n-nodes']/df['n-walks'],
+            'inv-walks': lambda df: 1/df['n-walks'],
+            # 'jump-sparsity'
+            'tot-jumps': lambda df: df['n-jumps']*df['n-walks'],
+            'MIR': lambda df: 1/df[df.name.isin(algs)].groupby(['ID','metric'], observed=True)['score'].rank(ascending=False),
+            'failed': lambda df: df['score'].isna()
+        })
+        
+    )
 ```
 
 ```{python}
-# 1/tidy.groupby(['ID','metric'])['score'].rank(ascending=False)
+alg_order=['FP','GL','CS','HYP','eOT','HSS','RP']
+graph_order=['Tree', 'Block', 'ScaleFree']
+metric_order=['E[MCC]','E[F-M]','APS', 'MCC-max','MCC-min']
 
-# tidy[tidy.failed & (tidy.metric=='seconds')]
-# tidy[tidy.metric=='seconds']
-tidy#[tidy.failed]
+tidy = tidy_up(df, alg_order, graph_order, metric_order)
+tidy.dtypes#.kind
+# print(alg_order)
 ```
 
 ```{python}
@@ -126,10 +135,18 @@ tidy.query('metric=="APS"').groupby('name', observed=True)['score'].mean().sort_
 ```
 
 ```{python}
-avg_scores= tidy.query('metric=="MCC"').groupby('name', observed=True)['score'].mean().sort_values(ascending=False)
+avg_scores= tidy.query('metric=="E[MCC]"').groupby('name', observed=True)['score'].mean().sort_values(ascending=False)
 avg_scores
 
 # pd.DataFrame.groupby()
+```
+
+```{python}
+# alg_order=['TS','TSi','GL','HSS','RP','CS','eOT',]
+# graph_order=['ScaleFree', 'Tree', 'Block']
+# alg_order = avg_scores.index.tolist()
+# metric_order=['MCC','F-M','APS']
+# metric_order=['MCC', ']
 ```
 
 ```{python}
@@ -166,11 +183,6 @@ sns.displot(np.array(betas))
 ```
 
 ```{python}
-# alg_order=['TS','TSi','GL','HSS','RP','CS','eOT',]
-graph_order=['ScaleFree', 'Tree', 'Block']
-alg_order = avg_scores.index.tolist()
-metric_order=['MCC','F-M','APS']
-# metric_order=['MCC', ']
 g = sns.FacetGrid(
     tidy, 
     col="metric", row="kind",
@@ -243,6 +255,37 @@ pd.concat([
     tidy.groupby(['metric','name'], observed=True)['score'].mean().unstack()[alg_order],#.round(2)
     tidy.groupby('name', observed=True)['MIR'].mean().to_frame().T
 ]).T.round(2)
+```
+
+```{python}
+# Custom formatting function
+from typing import NamedTuple
+
+class MedIQR(NamedTuple):
+    
+    med: float
+    iqr: float
+    
+    def __lt__(self, other): 
+        return self.med < other.med
+    def __str__(self):
+        return f"{self.med:.2f} ({self.iqr:.2f})"
+    def __format__(self, format_spec):
+        return format(str(self), format_spec)
+
+    @classmethod
+    def from_series(cls, s): 
+        return cls(s.median(), s.quantile(0.75)-s.quantile(0.25))
+```
+
+```{python}
+#| label: tbl-fp
+#| tbl-cap: Comparing median(IQR) scores for various metrics
+
+pd.concat([
+    tidy.groupby(['metric','name'], observed=True)['score'].agg(MedIQR.from_series).unstack()[alg_order],#.round(2)
+    # tidy.groupby('name', observed=True)['MIR'].mean().to_frame().T[alg_order]
+]).T[metric_order].rename_axis('method').style.highlight_max(props='font-weight:bold')
 ```
 
 ```{python}
