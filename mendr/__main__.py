@@ -16,7 +16,7 @@ from typing import Literal
 app = App()
 app.command(mendr_sim := App(
     name="sim",
-    help="Randomly generate a grame and simulate a random-walk"
+    help="Randomly generate graphs and simulate random-walks"
 ))
 # app.command(mendr_test := App(name="test"))
 
@@ -60,7 +60,7 @@ DEFAULT_METRICS = ['F1','F-M','MCC','APS', 'MCC-max']
 @app.command
 def recovery_test(
     method: EstimatorNameType,
-    datasets: list[DatasetIDType]=list(_datasets),
+    datasets: list[DatasetIDType]|None=None,
     metrics: list[MetricNameType]=DEFAULT_METRICS,
     preprocess: Literal["forest"]|None=None,
     **alg_kws: dict|None
@@ -69,6 +69,8 @@ def recovery_test(
     
     Send result report for each dataset as JSONL to stdout    
     """
+    if datasets is None:
+        datasets=list(_datasets)
     progress = tqdm(datasets)
     for dataset in progress: 
         progress.set_description(f"Graph Dataset {dataset}")

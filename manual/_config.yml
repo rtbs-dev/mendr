@@ -23,9 +23,9 @@ bibtex_bibfiles:
 
 # Information about where the book exists on the web
 repository:
-  url: https://github.com/executablebooks/jupyter-book  # Online location of your book
-  path_to_book: manual  # Optional path to your book, relative to the repository root
-  branch: main  # Which branch of the repository should be used when creating links (optional)
+  url: https://github.com/executablebooks/jupyter-book # Online location of your book
+  path_to_book: manual # Optional path to your book, relative to the repository root
+  branch: main # Which branch of the repository should be used when creating links (optional)
 
 # Add GitHub buttons to your book
 # See https://jupyterbook.org/customize/config.html#add-a-link-to-your-repository
@@ -33,20 +33,22 @@ html:
   use_issues_button: true
   use_repository_button: true
 
-
 sphinx:
   extra_extensions:
-  - 'sphinx.ext.autodoc'
-  - 'sphinx.ext.napoleon'
-  - 'sphinx.ext.viewcode'
+    - "sphinx.ext.autodoc"
+    - "sphinx.ext.napoleon"
+    - "sphinx.ext.viewcode"
+    - "sphinxcontrib.bibtex"
   # - 'sphinx_autodoc_typehints'
-  config: 
+  config:
+    bibtex_reference_style: author_year
+    bibtex_default_style: plain
     add_module_names: False
     # napoleon_use_param: True
-    autodoc_typehints: 'description'
-    latex_toplevel_sectioning: 'section'
+    autodoc_typehints: "description"
+    latex_toplevel_sectioning: "section"
     html_show_copyright: false
-    html_theme_options: 
+    html_theme_options:
       extra_footer: |
         <p><em>
         This material is declared a work of the U.S. Government and is not subject to copyright protection in the United States.
@@ -66,6 +68,6 @@ sphinx:
     html_css_files:
       - "nist-combined.css"
 parse:
-  myst_enable_extensions: 
+  myst_enable_extensions:
     - dollarmath
     - deflist

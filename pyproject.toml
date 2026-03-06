@@ -6,21 +6,23 @@ authors = ["Rachael T. Sexton <rtbs@nist.gov>"]
 license = "NIST"
 readme = "README.md"
 packages = [{include = "mendr"}]
+include = [".dvc/config"]
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.13"
+python = ">=3.11,<3.13"
 networkx = "^3.2.1"
 numpy = ">=1.26,<2.3"
 scipy = "^1.12"
 cyclopts = "^2.3"
 csrgraph = {git = "https://github.com/VHRanger/CSRGraph.git"}
-jaxtyping = "^0.2.25"
-beartype = "^0.17.2"
-pyserde = "^0.14"
+jaxtyping = "^0.3"
+beartype = "^0"
 sparse = "^0.15"
 affinis = {git = "https://github.com/rtbs-dev/affinis.git"}
 pyarrow = "^19.0"
 autoregistry = "^1.1.2"
+pyserde = "^0.30.1"
+dvc = "^3.66.1"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.29.2"

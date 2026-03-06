@@ -1,5 +1,5 @@
 # MENDR
-> **M**easurement **E**rror in **N**etwork **D**iffusion **D**atasets for (graph) **R**econstruction
+> **M**easurement **E**rror in **N**etwork **D**iffusion & **R**econstruction
 
 MENDR is a benchmarking data and results registry, along with tooling for accurate (de)serialization and validation of each challenge problem. 
 
@@ -9,9 +9,9 @@ MENDR is a benchmarking data and results registry, along with tooling for accura
 ```
 
 ## Leaderboard
-Current performance leaderboard for various methods on the MENDR challenge datasets, as originally reported in {cite}`sexton2025measuring`.
+Current performance leaderboard for various methods on the MENDR challenge datasets, as originally reported in {cite:t}`sexton2025measuring`.
 
-![table](https://dissertation.rtbs.dev/content/part2/2-05-forest-pursuit.html#tbl-fp)
+![table](https://dissertation.rtbs.dev/content/part2/2-05-forest-pursuit_files/figure-html/-content-codefigs-results-tbl-fp-output-1.svg)
 
 ## What does it help with?
 
@@ -32,4 +32,11 @@ For more information, see the [`mendr` CLI page](cli.md)
 ### Data VCS 
 TO facilitate community a
 
+## References
 
+```{bibliography}
+```
+
+```python
+
+```
